@@ -32,6 +32,10 @@ RUN apt-get install --no-install-recommends -yqqq \
     ros-$ROS_DISTRO-ros-gz-sim \
     ros-$ROS_DISTRO-ros-gz-interfaces \
     ros-$ROS_DISTRO-ros-gz-bridge
+    
+# Gazebo Harmonic
+RUN apt-get install --no-install-recommends -yqqq \
+    ros-humble-ros-gzharmonic
 
 # Using shell to use bash commands like 'source'
 SHELL ["/bin/bash", "-c"]
