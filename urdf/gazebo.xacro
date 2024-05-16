@@ -20,7 +20,7 @@
             <right_joint>middle_right_wheel_joint</right_joint>
             <wheel_separation>${traction_track_width+traction_wheel_width-0.01}</wheel_separation>
             <wheel_diameter>${2*traction_wheel_radius+0.01}</wheel_diameter>
-            <robot_base_frame>base_link</robot_base_frame>
+            <robot_base_frame>base_footprint</robot_base_frame>
             <max_wheel_torque>${traction_max_wheel_torque}</max_wheel_torque>
             <command_topic>cmd_vel</command_topic>
             <odometry_topic>$(arg wheel_odom_topic)</odometry_topic>
@@ -66,7 +66,7 @@
             </ros>
             <always_on>true</always_on>
             <update_rate>30.0</update_rate>
-            <body_name>base_link</body_name>
+            <body_name>base_footprint</body_name>
             <gaussian_noise>0.00</gaussian_noise>
             <frame_name>$(arg ground_truth_frame)</frame_name>
         </plugin>
