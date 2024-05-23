@@ -46,7 +46,7 @@
       <param name="odom_frame_id" value="$(arg robot_namespace)/odom" />
       <param name="base_frame_id" value="$(arg robot_namespace)/base_link" />
       <param name="global_frame_id" value="map" />
-      <remap from="scan" to="$(arg robot_namespace)/$(arg scan_topic)" />
+      <remap from="scan" to="$(arg scan_topic)" />
     </node>
   </group>
 
@@ -88,7 +88,7 @@
       <param name="odom_frame_id" value="$(arg robot_namespace)/odom" />
       <param name="base_frame_id" value="$(arg robot_namespace)/base_link" />
       <param name="global_frame_id" value="map" />
-      <remap from="scan" to="$(arg robot_namespace)/$(arg scan_topic)" />
+      <remap from="scan" to="$(arg scan_topic)" />
     </node>
   </group>
 
@@ -130,7 +130,7 @@
       <param name="odom_frame_id" value="$(arg robot_namespace)/odom" />
       <param name="base_frame_id" value="$(arg robot_namespace)/base_link" />
       <param name="global_frame_id" value="map" />
-      <remap from="scan" to="$(arg robot_namespace)/$(arg scan_topic)" />
+      <remap from="scan" to="$(arg scan_topic)" />
     </node>
   </group>
 
