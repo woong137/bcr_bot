@@ -47,6 +47,7 @@
     output="screen" />
 
 <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+    <param name="tf_prefix" value="$(arg robot_namespace)" />
     <remap from="/joint_states" to="$(arg robot_namespace)/joint_states"/>
 </node>
 
