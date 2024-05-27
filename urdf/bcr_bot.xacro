@@ -52,6 +52,16 @@
     <xacro:include filename="$(find bcr_bot)/urdf/macros.xacro"/>
     <xacro:include filename="$(find bcr_bot)/urdf/gazebo.xacro"/>
 
+    <!-- ............................. BASE FOOTPRINT ................................ -->
+
+    <link name="base_footprint"/>
+
+    <joint name="base_joint" type="fixed">
+      <parent link="base_footprint"/>
+      <child link="base_link"/>
+      <origin xyz="0.0 0.0 0.217" rpy="0 0 0"/>
+    </joint>
+
     <!-- ................................ BASE LINK .................................. -->
 
     <link name="base_link"/>

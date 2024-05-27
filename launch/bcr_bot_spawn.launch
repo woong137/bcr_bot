@@ -43,7 +43,7 @@
         -model $(arg robot_namespace)_robot
         -x $(arg position_x)
         -y $(arg position_y)
-        -z 0.9
+        -z 0.2
         -Y $(arg orientation_yaw)"
         output="screen"/>
 

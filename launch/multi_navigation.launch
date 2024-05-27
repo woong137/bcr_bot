@@ -11,7 +11,7 @@
   <arg name="bcr_bot_0_prefix" value="bcr_bot_0"/>
   <group ns="$(arg bcr_bot_0_prefix)">
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_0_prefix)/base_link"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_0_prefix)/base_footprint"/>
       <arg name="set_odom_frame" value="$(arg bcr_bot_0_prefix)/odom"/>
       <arg name="set_scan_frame" value="$(arg bcr_bot_0_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
@@ -24,7 +24,7 @@
   <arg name="bcr_bot_1_prefix" value="bcr_bot_1"/>
   <group ns="$(arg bcr_bot_1_prefix)">
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_1_prefix)/base_link"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_1_prefix)/base_footprint"/>
       <arg name="set_odom_frame" value="$(arg bcr_bot_1_prefix)/odom"/>
       <arg name="set_scan_frame" value="$(arg bcr_bot_1_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
@@ -37,7 +37,7 @@
   <arg name="bcr_bot_2_prefix" value="bcr_bot_2"/>
   <group ns="$(arg bcr_bot_2_prefix)">
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_2_prefix)/base_link"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_2_prefix)/base_footprint"/>
       <arg name="set_odom_frame" value="$(arg bcr_bot_2_prefix)/odom"/>
       <arg name="set_scan_frame" value="$(arg bcr_bot_2_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
