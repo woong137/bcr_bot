@@ -24,7 +24,10 @@ catkin_make
 ```
 
 ### Run
-
+To Run all launch files below,
+```bash
+roslaunch bcr_bot multi_bot_core.launch
+```
 To launch the multi robots in Gazebo,
 ```bash
 roslaunch bcr_bot multi_gazebo.launch
