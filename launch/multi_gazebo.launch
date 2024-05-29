@@ -54,7 +54,7 @@
 		</include>
 	</group>
 
-	<!-- <group ns="bcr_bot_1">
+	<group ns="bcr_bot_1">
 		<arg name="robot_namespace" value="bcr_bot_1" />
 		<arg name="position_x" value="0.0" />
 		<arg name="position_y" value="2.0" />
@@ -96,5 +96,5 @@
 			<arg name="orientation_yaw" value="$(arg orientation_yaw)" />
 			<arg name="odometry_source" value="$(arg odometry_source)" />
 		</include>
-	</group> -->
+	</group>
 </launch>
