@@ -20,4 +20,4 @@ local_costmap:
       { data_type: LaserScan, topic: scan, marking: true, clearing: true }
 
   inflation_layer:
-    inflation_radius: 0.55
+    inflation_radius: 1.0
