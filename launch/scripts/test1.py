@@ -19,8 +19,8 @@ def movebase_client():
     goal.target_pose.header.stamp = rospy.Time.now()  # 현재 시간으로 설정
 
     # 이동할 위치와 방향 설정
-    goal.target_pose.pose.position.x = 0.0  # X 좌표 설정
-    goal.target_pose.pose.position.y = -7.0  # Y 좌표 설정
+    goal.target_pose.pose.position.x = 5.0  # X 좌표 설정
+    goal.target_pose.pose.position.y = 0.0  # Y 좌표 설정
     goal.target_pose.pose.orientation.w = 1.0  # 방향 설정 (여기서는 쿼터니언 표현으로 사용하여 회전 없음을 의미)
 
     # 로봇에게 목표 전송
