@@ -28,4 +28,4 @@ voxel_layer:
     }
 
 inflation_layer:
-  inflation_radius: 1.0
+  inflation_radius: 0.8
