@@ -25,8 +25,8 @@ DWAPlannerROS:
   xy_goal_tolerance: 0.5
 
   # Forward Simulation Parameters
-  sim_time: 1.0
-  vx_samples: 10
+  sim_time: 1.7
+  vx_samples: 3
   vy_samples: 0
   vtheta_samples: 20
 
@@ -34,7 +34,7 @@ DWAPlannerROS:
   path_distance_bias: 32.0
   goal_distance_bias: 24.0
   occdist_scale: 0.01
-  forward_point_distance: 0.3
+  forward_point_distance: 0.2
   stop_time_buffer: 0.2
   scaling_speed: 0.25
   max_scaling_factor: 0.2
