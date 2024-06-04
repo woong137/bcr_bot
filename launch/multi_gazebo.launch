@@ -34,8 +34,8 @@
 
 	<group ns="bcr_bot_0">
 		<arg name="robot_namespace" value="bcr_bot_0" />
-		<arg name="position_x" value="0.0" />
-		<arg name="position_y" value="5.0" />
+		<arg name="position_x" value="5.0" />
+		<arg name="position_y" value="1.0" />
 		<arg name="orientation_yaw" value="0.0" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
@@ -57,7 +57,7 @@
 	<group ns="bcr_bot_1">
 		<arg name="robot_namespace" value="bcr_bot_1" />
 		<arg name="position_x" value="0.0" />
-		<arg name="position_y" value="0.0" />
+		<arg name="position_y" value="-8.0" />
 		<arg name="orientation_yaw" value="0.0" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
@@ -78,8 +78,8 @@
 
 	<group ns="bcr_bot_2">
 		<arg name="robot_namespace" value="bcr_bot_2" />
-		<arg name="position_x" value="0.0" />
-		<arg name="position_y" value="-5.0" />
+		<arg name="position_x" value="2.5" />
+		<arg name="position_y" value="8.0" />
 		<arg name="orientation_yaw" value="0.0" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">

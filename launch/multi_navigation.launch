@@ -15,8 +15,8 @@
       <arg name="set_odom_frame" value="$(arg bcr_bot_0_prefix)/odom"/>
       <arg name="set_scan_frame" value="$(arg bcr_bot_0_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="0.0"/>
-      <arg name="initial_pose_y" default="5.0"/>
+      <arg name="initial_pose_x" default="5.0"/>
+      <arg name="initial_pose_y" default="1.0"/>
       <arg name="initial_pose_a" default="0.0"/>
     </include>
   </group>
@@ -29,7 +29,7 @@
       <arg name="set_scan_frame" value="$(arg bcr_bot_1_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
       <arg name="initial_pose_x" default="0.0"/>
-      <arg name="initial_pose_y" default="0.0"/>
+      <arg name="initial_pose_y" default="-8.0"/>
       <arg name="initial_pose_a" default="0.0"/>
     </include>
   </group>
@@ -41,8 +41,8 @@
       <arg name="set_odom_frame" value="$(arg bcr_bot_2_prefix)/odom"/>
       <arg name="set_scan_frame" value="$(arg bcr_bot_2_prefix)/scan"/>
       <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="0.0"/>
-      <arg name="initial_pose_y" default="-5.0"/>
+      <arg name="initial_pose_x" default="2.5"/>
+      <arg name="initial_pose_y" default="8.0"/>
       <arg name="initial_pose_a" default="0.0"/>
     </include>
   </group>
