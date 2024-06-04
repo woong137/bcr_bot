@@ -1,0 +1,12 @@
+bcr_bot_0:
+  x: 5.0
+  y: 1.0
+  theta: 0.0  # rad
+bcr_bot_1:
+  x: 0.0
+  y: -8.0
+  theta: -1.57
+bcr_bot_2:
+  x: 2.5
+  y: 8.0
+  theta: 0.0
