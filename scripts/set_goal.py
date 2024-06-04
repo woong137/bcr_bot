@@ -7,7 +7,6 @@ import yaml
 from geometry_msgs.msg import Quaternion
 import tf.transformations
 from std_msgs.msg import String
-import math
 
 
 def load_zone_coordinates(yaml_file, zone_name):
@@ -17,13 +16,12 @@ def load_zone_coordinates(yaml_file, zone_name):
         return zone['x'], zone['y'], zone['theta']
 
 
-def create_quaternion_from_theta(theta_deg):
-    theta_rad = math.radians(theta_deg)
-    quaternion = tf.transformations.quaternion_from_euler(0, 0, theta_rad)
+def create_quaternion_from_theta(theta):
+    quaternion = tf.transformations.quaternion_from_euler(0, 0, theta)
     return Quaternion(*quaternion)
 
 
-def movebase_client(x, y, theta_deg):
+def movebase_client(x, y, theta):
     client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
     client.wait_for_server()
 
@@ -33,7 +31,7 @@ def movebase_client(x, y, theta_deg):
 
     goal.target_pose.pose.position.x = x
     goal.target_pose.pose.position.y = y
-    goal.target_pose.pose.orientation = create_quaternion_from_theta(theta_deg)
+    goal.target_pose.pose.orientation = create_quaternion_from_theta(theta)
 
     client.send_goal(goal)
     client.wait_for_result()
@@ -46,8 +44,8 @@ def target_zone_callback(msg):
     rospy.loginfo(f"Received target zone: {zone_name}")
 
     try:
-        x, y, theta_deg = load_zone_coordinates('coordinates.yaml', zone_name)
-        result = movebase_client(x, y, theta_deg)
+        x, y, theta = load_zone_coordinates('zone_coordinates.yaml', zone_name)
+        result = movebase_client(x, y, theta)
         if result:
             rospy.loginfo("목표 지점에 도달했습니다.")
         else:
