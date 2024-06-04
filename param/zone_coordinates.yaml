@@ -2,12 +2,12 @@ zones:
   A:
     x: 1.0
     y: 2.0
-    theta: 0.0  # degree
+    theta: 0.0  # rad
   B:
     x: 3.0
     y: 4.0
-    theta: 90.0
+    theta: 0.0
   C:
     x: 5.0
     y: 6.0
-    theta: 180.0
+    theta: 0.0
