@@ -32,6 +32,16 @@ class PartSpawner():
         self.model_state = rospy.ServiceProxy(
             "/gazebo/get_model_state", GetModelState)
 
+    def main(self):
+        spawn_result = self.spawnCondition("bcr_bot_0")
+        if spawn_result is not None:
+            spawn_condition, spawn_zone = spawn_result
+            if self.checkModel() == False and spawn_condition == True:
+                spawn_point = Point(
+                    x=self.supply_zones[spawn_zone]['x'], y=self.supply_zones[spawn_zone]['y'], z=0.5)
+                self.spawnModel("car_wheel",
+                                spawn_point, [0, 0, 0])
+
     def checkModel(self):
         res = self.model_state(self.part_name, "world")
         return res.success
@@ -48,12 +58,13 @@ class PartSpawner():
             ** 0.5
 
     def spawnCondition(self, robot_namespace):
-        trans, euler = get_position(robot_namespace)
+        trans, euler = self.get_position(robot_namespace)
         for zone_name, zone in self.supply_zones.items():
-            distance = ((zone['x'] - trans[0])**2 + (zone['y'] - trans[1])**2)**0.5
+            distance = ((zone['x'] - trans[0])**2 +
+                        (zone['y'] - trans[1])**2)**0.5
             angle = abs(zone['theta'] - euler[2])
             if distance < self.distance_threshold and angle < self.angle_threshold:
-                return True, zone_name # robot이 zone에 도달했는 지, 그 zone의 이름을 반환
+                return True, zone_name  # robot이 zone에 도달했는 지, 그 zone의 이름을 반환
 
     def spawnModel(self, part, spawn_point, spawn_angle):
         with open(self.path + part + "/model.sdf", "r") as f:
@@ -74,32 +85,21 @@ class PartSpawner():
         self.deleteModel()
         print("Shutting down")
 
-    def main(self):
-        spawn_result = self.spawnCondition("bcr_bot_0")
-        if spawn_result is not None:
-            spawn_condition, spawn_zone = spawn_result
-            if self.checkModel() == False and spawn_condition == True:
-                spawn_point = Point(
-                    x=self.supply_zones[spawn_zone]['x'], y=self.supply_zones[spawn_zone]['y'], z=0.5)
-                self.spawnModel("car_wheel",
-                                spawn_point, [0, 0, 0])
+    def get_position(self, robot_namespace):
+        listener = tf.TransformListener()
+        try:
+            listener.waitForTransform(
+                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(3.0))
+            (trans, rot) = listener.lookupTransform(
+                'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
+            euler = tf.transformations.euler_from_quaternion(rot)
 
+            # print("Translation: %.2f, %.2f, %.2f" % (trans[0], trans[1], trans[2]))
+            # print("Rotation: %.2f, %.2f, %.2f" % (euler[0], euler[1], euler[2]))
+            return trans, euler
 
-def get_position(robot_namespace):
-    listener = tf.TransformListener()
-    try:
-        listener.waitForTransform(
-            'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(3.0))
-        (trans, rot) = listener.lookupTransform(
-            'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
-        euler = tf.transformations.euler_from_quaternion(rot)
-
-        # print("Translation: %.2f, %.2f, %.2f" % (trans[0], trans[1], trans[2]))
-        # print("Rotation: %.2f, %.2f, %.2f" % (euler[0], euler[1], euler[2]))
-        return trans, euler
-
-    except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-        rospy.logerr("TF error: %s", e)
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+            rospy.logerr("TF error: %s", e)
 
 
 def load_zone_coordinates(yaml_file, zone_startswith):
