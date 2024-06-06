@@ -11,3 +11,33 @@ zones:
     x: 2.5
     y: 8.0
     theta: 0.0
+  S1:
+    x: -3.0
+    y: -7.5
+    theta: 0.0
+    part: wheel
+  S2:
+    x: -3.0
+    y: -3.2
+    theta: 0.0
+    part: wheel
+  S3:
+    x: -3.0
+    y: 1.2
+    theta: 0.0
+    part: wheel
+  D1:
+    x: 0.0
+    y: 0.0
+    theta: 0.0
+    part: wheel
+  D2:
+    x: 0.0
+    y: 0.0
+    theta: 0.0
+    part: wheel
+  D3:
+    x: 0.0
+    y: 0.0
+    theta: 0.0
+    part: wheel
