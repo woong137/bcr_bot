@@ -44,7 +44,7 @@ def target_zone_callback(msg):
     rospy.loginfo(f"Received target zone: {zone_name}")
 
     try:
-        x, y, theta = load_zone_coordinates('zone_coordinates.yaml', zone_name)
+        x, y, theta = load_zone_coordinates('../warehouse_robot_project/src/bcr_bot/param/zone_coordinates.yaml', zone_name)
         result = movebase_client(x, y, theta)
         if result:
             rospy.loginfo("목표 지점에 도달했습니다.")
@@ -58,7 +58,6 @@ def target_zone_callback(msg):
 
 if __name__ == '__main__':
     rospy.init_node('set_goal')
-
     rospy.Subscriber('target_zone', String, target_zone_callback)
 
     rospy.spin()
