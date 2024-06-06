@@ -24,6 +24,7 @@ class PartSpawner():
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "D")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
+        self.robots = ["bcr_bot_0", "bcr_bot_1", "bcr_bot_2"]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -33,22 +34,24 @@ class PartSpawner():
             "/gazebo/get_model_state", GetModelState)
 
     def main(self):
-        spawn_result = self.spawnCondition("bcr_bot_0")
-        if spawn_result is not None:
-            spawn_condition, spawn_zone = spawn_result
-            if self.checkModel() == False and spawn_condition == True:
-                spawn_point = Point(
-                    x=self.supply_zones[spawn_zone]['x'], y=self.supply_zones[spawn_zone]['y'], z=0.5)
-                self.spawnModel("car_wheel",
-                                spawn_point, [0, 0, 0])
+        for robot_namespace in self.robots:
+            spawn_result = self.spawnCondition(robot_namespace)
+            if spawn_result is not None:
+                spawn_condition, spawn_zone = spawn_result
+                if self.checkModel("car_wheel", robot_namespace) == False and spawn_condition == True:
+                    spawn_point = Point(
+                        x=self.supply_zones[spawn_zone]['x'], y=self.supply_zones[spawn_zone]['y'], z=0.5)
+                    self.spawnModel("car_wheel", robot_namespace,
+                                    spawn_point, [0, 0, 0])
 
-    def checkModel(self):
-        res = self.model_state(self.part_name, "world")
+    def checkModel(self, part, robot_namespace):
+        part_name = part + "(" + robot_namespace + ")"
+        res = self.model_state(part_name, "world")
         return res.success
 
-    def getPosition(self):
-        res = self.model_state(self.part_name, "world")
-        return res.pose.position.z
+    # def getPosition(self):
+    #     res = self.model_state(self.part_name, "world")
+    #     return res.pose.position.z
 
     def getDistance(self):
         res = self.model_state(self.part_name, "world")
@@ -58,7 +61,7 @@ class PartSpawner():
             ** 0.5
 
     def spawnCondition(self, robot_namespace):
-        trans, euler = self.get_position(robot_namespace)
+        trans, euler = self.getPose(robot_namespace)
         for zone_name, zone in self.supply_zones.items():
             distance = ((zone['x'] - trans[0])**2 +
                         (zone['y'] - trans[1])**2)**0.5
@@ -66,7 +69,7 @@ class PartSpawner():
             if distance < self.distance_threshold and angle < self.angle_threshold:
                 return True, zone_name  # robot이 zone에 도달했는 지, 그 zone의 이름을 반환
 
-    def spawnModel(self, part, spawn_point, spawn_angle):
+    def spawnModel(self, part, robot_namespace, spawn_point, spawn_angle):
         with open(self.path + part + "/model.sdf", "r") as f:
             part_sdf = f.read()
 
@@ -74,7 +77,9 @@ class PartSpawner():
             spawn_angle[0], spawn_angle[1], spawn_angle[2])
         orient = Quaternion(quat[0], quat[1], quat[2], quat[3])
         pose = Pose(spawn_point, orient)
-        self.spawn_model(self.part_name, part_sdf, '', pose, 'world')
+
+        part_name = part + "(" + robot_namespace + ")"
+        self.spawn_model(part_name, part_sdf, '', pose, 'world')
         rospy.sleep(1)
 
     def deleteModel(self):
@@ -85,11 +90,11 @@ class PartSpawner():
         self.deleteModel()
         print("Shutting down")
 
-    def get_position(self, robot_namespace):
+    def getPose(self, robot_namespace):
         listener = tf.TransformListener()
         try:
             listener.waitForTransform(
-                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(3.0))
+                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(5.0))
             (trans, rot) = listener.lookupTransform(
                 'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
             euler = tf.transformations.euler_from_quaternion(rot)
