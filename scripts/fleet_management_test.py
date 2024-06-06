@@ -20,9 +20,9 @@ if __name__ == '__main__':
     try:
         # 각 로봇의 타겟 구역 설정
         bot_zones = {
-            "bcr_bot_0": "B",
-            "bcr_bot_1": "C",
-            "bcr_bot_2": "A"
+            "bcr_bot_0": "S1",
+            "bcr_bot_1": "S2",
+            "bcr_bot_2": "S3"
         }
 
         # ROS 초기화
