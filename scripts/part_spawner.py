@@ -18,9 +18,9 @@ class PartSpawner():
         self.spawn_point = Point(x=0, y=0, z=0.3)
         self.spawn_angle = [0, 0, 0]  # rad
         self.delete_point = Point(x=1, y=1, z=0)
-        self.supply_zones = load_zone_coordinates(
+        self.supply_zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "S")
-        self.demend_zones = load_zone_coordinates(
+        self.demend_zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "D")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
@@ -108,19 +108,19 @@ class PartSpawner():
             rospy.logerr("TF error: %s", e)
 
 
-def load_zone_coordinates(yaml_file, zone_startswith):
-    with open(yaml_file, 'r') as file:
-        data = yaml.safe_load(file)
-        zones = {}
-        for zone_name, coords in data['zones'].items():
-            if zone_name.startswith(zone_startswith):
-                zones[zone_name] = {
-                    'x': coords['x'],
-                    'y': coords['y'],
-                    'theta': coords['theta'],
-                    'part': coords['part']
-                }
-    return zones
+    def load_zone_coordinates(yaml_file, zone_startswith):
+        with open(yaml_file, 'r') as file:
+            data = yaml.safe_load(file)
+            zones = {}
+            for zone_name, coords in data['zones'].items():
+                if zone_name.startswith(zone_startswith):
+                    zones[zone_name] = {
+                        'x': coords['x'],
+                        'y': coords['y'],
+                        'theta': coords['theta'],
+                        'part': coords['part']
+                    }
+        return zones
 
 
 if __name__ == "__main__":
