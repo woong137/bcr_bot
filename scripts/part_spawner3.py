@@ -95,8 +95,6 @@ class PartSpawner():
                 'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
             euler = tf.transformations.euler_from_quaternion(rot)
 
-            # print("Translation: %.2f, %.2f, %.2f" % (trans[0], trans[1], trans[2]))
-            # print("Rotation: %.2f, %.2f, %.2f" % (euler[0], euler[1], euler[2]))
             return trans, euler
 
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
