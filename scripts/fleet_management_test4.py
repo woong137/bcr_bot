@@ -26,7 +26,7 @@ import threading
 
 '''
 
-class FleetManager:
+class FleetManagerAMR():
 
     def __init__(self):
         self.bot_zones = {
@@ -167,7 +167,7 @@ if __name__ == "__main__":
     rospy.wait_for_service("/gazebo/spawn_sdf_model")
     rospy.wait_for_service("/gazebo/get_model_state")
 
-    fleet_manager = FleetManager()
+    fleet_manager = FleetManagerAMR()
     part_spawner = PartSpawner()
 
     rate = rospy.Rate(1)
