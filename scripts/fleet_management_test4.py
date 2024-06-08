@@ -26,6 +26,37 @@ import threading
 
 '''
 
+
+class FleetManagerMain():
+    '''
+    각 셀의 데이터
+    {C1: {part: car_wheel, current_count: 0, required_count: 4, is_working: False, work_progress: 0},  ...}
+
+    각 로봇의 데이터
+    {bcr_bot_0: {previous_zone: S1, target_zone: D1, is_working: False}, ...}
+
+    넉넉하게 부품을 보유하기 위한 비율
+    self.excess_part_ratio = 3
+
+    셀이 부품이 필요한 지 확인
+        current_count가 required_count * excess_part_ratio보다 작으면 부품을 요청
+
+    가까운 로봇에게 부품을 요청
+        가장 가까운 로봇 찾기
+        그 로봇이 작업 중이면 다음으로 넘어가기
+        로봇에게 부품을 요청
+
+    current_count가 required_count보다 크고 AGV가 셀에 도착하면
+        해당 셀의 is_working을 True로 변경
+        work_progress를 서서히 증가시키기
+        work_progress가 100이 되면 is_working을 False로 변경
+        current_count를 current_count - required_count로 변경
+
+    각 셀의 데이터와 각 로봇의 데이터 출력
+
+    '''
+
+
 class FleetManagerAMR():
 
     def __init__(self):
@@ -64,7 +95,8 @@ class PartSpawner():
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
-        self.robots = ["bcr_bot_0", "bcr_bot_1", "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
+        self.robots = ["bcr_bot_0", "bcr_bot_1",
+                       "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -81,17 +113,20 @@ class PartSpawner():
                 robot_namespace, target_zone_value)
             is_supply_zone = target_zone.startswith('S')
             is_demand_zone = target_zone.startswith('D')
-            has_model = self.checkModel(target_zone_value['part'], robot_namespace)
+            has_model = self.checkModel(
+                target_zone_value['part'], robot_namespace)
 
             if has_model == False and is_at_zone == True and is_supply_zone == True:
-                print(f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 수령했습니다.")
+                print(
+                    f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 수령했습니다.")
                 spawn_point = Point(
                     x=target_zone_value['x'], y=target_zone_value['y'], z=0.5)
                 self.spawnModel("car_wheel", robot_namespace,
                                 spawn_point, [0, 0, 0])
 
             elif has_model == True and is_at_zone == True and is_demand_zone == True:
-                print(f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
+                print(
+                    f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
                 self.deleteModel("car_wheel", robot_namespace)
 
     def checkModel(self, part, robot_namespace):
