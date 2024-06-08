@@ -35,13 +35,21 @@ class PartSpawner():
 
     def main(self):
         for robot_namespace in self.robots:
-            is_at_zone, reached_zone = self.check_robot_reached_zone(robot_namespace)
-            print(f"Robot {robot_namespace} is at zone {is_at_zone}")
-            if self.checkModel("car_wheel", robot_namespace) == False and is_at_zone == True:
+
+            is_at_supply_zone, reached_supply_zone = self.check_robot_reached_zone(
+                robot_namespace, self.supply_zones)
+            if self.checkModel("car_wheel", robot_namespace) == False and is_at_supply_zone == True:
+                print(f"Robot {robot_namespace} is at zone {reached_supply_zone}")
                 spawn_point = Point(
-                    x=self.supply_zones[reached_zone]['x'], y=self.supply_zones[reached_zone]['y'], z=0.5)
+                    x=self.supply_zones[reached_supply_zone]['x'], y=self.supply_zones[reached_supply_zone]['y'], z=0.5)
                 self.spawnModel("car_wheel", robot_namespace,
                                 spawn_point, [0, 0, 0])
+
+            is_at_demand_zone, reached_demand_zone = self.check_robot_reached_zone(
+                robot_namespace, self.demend_zones)
+            if self.checkModel("car_wheel", robot_namespace) == True and is_at_demand_zone == True:
+                print(f"Robot {robot_namespace} is at zone {reached_demand_zone}")
+                self.deleteModel("car_wheel", robot_namespace)
 
     def checkModel(self, part, robot_namespace):
         part_name = part + "(" + robot_namespace + ")"
@@ -55,9 +63,9 @@ class PartSpawner():
                 (self.delete_point.z - res.pose.position.z)**2)\
             ** 0.5
 
-    def check_robot_reached_zone(self, robot_namespace):
+    def check_robot_reached_zone(self, robot_namespace, zones):
         trans, euler = self.getPose(robot_namespace)
-        for zone_name, zone in self.supply_zones.items():
+        for zone_name, zone in zones.items():
             distance = ((zone['x'] - trans[0])**2 +
                         (zone['y'] - trans[1])**2)**0.5
             angle = abs(zone['theta'] - euler[2])
@@ -79,13 +87,11 @@ class PartSpawner():
         self.spawn_model(part_name, part_sdf, '', pose, 'world')
         rospy.sleep(1)
 
-    def deleteModel(self):
-        self.delete_model(self.part_name)
-        rospy.sleep(1)
+    def deleteModel(self, part, robot_namespace):
 
-    def shutdown_hook(self):
-        self.deleteModel()
-        print("Shutting down")
+        part_name = part + "(" + robot_namespace + ")"
+        self.delete_model(part_name)
+        rospy.sleep(1)
 
     def getPose(self, robot_namespace):
         listener = tf.TransformListener()
@@ -125,8 +131,6 @@ if __name__ == "__main__":
     rospy.wait_for_service("/gazebo/get_model_state")
     rate = rospy.Rate(15)
     part_spawner = PartSpawner()
-    rospy.on_shutdown(part_spawner.shutdown_hook)
     while not rospy.is_shutdown():
         part_spawner.main()
-
         rate.sleep()
