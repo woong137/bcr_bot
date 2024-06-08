@@ -20,7 +20,7 @@ class PartSpawner():
         self.delete_point = Point(x=1, y=1, z=0)
         self.supply_zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "S")
-        self.demend_zones = self.load_zone_coordinates(
+        self.demand_zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "D")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
@@ -35,10 +35,11 @@ class PartSpawner():
 
     def main(self):
         for robot_namespace in self.robots:
-
             is_at_supply_zone, reached_supply_zone = self.check_robot_reached_zone(
                 robot_namespace, self.supply_zones)
-            if self.checkModel("car_wheel", robot_namespace) == False and is_at_supply_zone == True:
+            has_model = self.checkModel("car_wheel", robot_namespace)
+
+            if has_model == False and is_at_supply_zone == True:
                 print(f"Robot {robot_namespace} is at zone {reached_supply_zone}")
                 spawn_point = Point(
                     x=self.supply_zones[reached_supply_zone]['x'], y=self.supply_zones[reached_supply_zone]['y'], z=0.5)
@@ -46,15 +47,19 @@ class PartSpawner():
                                 spawn_point, [0, 0, 0])
 
             is_at_demand_zone, reached_demand_zone = self.check_robot_reached_zone(
-                robot_namespace, self.demend_zones)
-            if self.checkModel("car_wheel", robot_namespace) == True and is_at_demand_zone == True:
+                robot_namespace, self.demand_zones)
+            if has_model == True and is_at_demand_zone == True:
                 print(f"Robot {robot_namespace} is at zone {reached_demand_zone}")
                 self.deleteModel("car_wheel", robot_namespace)
 
     def checkModel(self, part, robot_namespace):
-        part_name = part + "(" + robot_namespace + ")"
-        res = self.model_state(part_name, "world")
-        return res.success
+        part_name = f"{part}({robot_namespace})"
+        try:
+            res = self.model_state(part_name, "world")
+            return res.success
+        except rospy.ServiceException as e:
+            # rospy.logerr(f"Service call failed: {e}")
+            return False
 
     def getDistance(self):
         res = self.model_state(self.part_name, "world")
@@ -101,14 +106,14 @@ class PartSpawner():
             (trans, rot) = listener.lookupTransform(
                 'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
             euler = tf.transformations.euler_from_quaternion(rot)
-
             return trans, euler
 
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
             rospy.logerr("TF error: %s", e)
+            return None, None
 
 
-    def load_zone_coordinates(yaml_file, zone_startswith):
+    def load_zone_coordinates(self, yaml_file, zone_startswith):
         with open(yaml_file, 'r') as file:
             data = yaml.safe_load(file)
             zones = {}
