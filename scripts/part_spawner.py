@@ -13,11 +13,6 @@ class PartSpawner():
     def __init__(self) -> None:
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path('bcr_bot')+"/models/"
-        self.part = self.path+"car_wheel/model.sdf"
-        self.part_name = "car_wheel"
-        self.spawn_point = Point(x=0, y=0, z=0.3)
-        self.spawn_angle = [0, 0, 0]  # rad
-        self.delete_point = Point(x=1, y=1, z=0)
         self.supply_zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "S")
         self.demand_zones = self.load_zone_coordinates(
@@ -60,13 +55,6 @@ class PartSpawner():
         except rospy.ServiceException as e:
             # rospy.logerr(f"Service call failed: {e}")
             return False
-
-    def getDistance(self):
-        res = self.model_state(self.part_name, "world")
-        return ((self.delete_point.x - res.pose.position.x)**2 +
-                (self.delete_point.y - res.pose.position.y)**2 +
-                (self.delete_point.z - res.pose.position.z)**2)\
-            ** 0.5
 
     def check_robot_reached_zone(self, robot_namespace, zones):
         trans, euler = self.getPose(robot_namespace)
