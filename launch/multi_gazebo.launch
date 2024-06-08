@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-	<!--............................
-	CONFIGURABLE PARAMETERS .............................-->
+	<!--....................... CONFIGURABLE PARAMETERS .........................-->
 
 	<env name="GAZEBO_MODEL_PATH" value="$(find bcr_bot)/models:$(optenv GAZEBO_MODEL_PATH)" />
 	<env name="GAZEBO_RESOURCE_PATH" value="$(find bcr_bot)/worlds:$(optenv GAZEBO_RESOURCE_PATH)" />
@@ -17,6 +16,28 @@
 	<arg name="conveyor_enabled" default="false" />
 	<arg name="ground_truth_frame" default="map" />
 	<arg name="odometry_source" default="world" />
+
+	<!-- .......................... INITIAL POSE ................................... -->
+
+	<arg name="bcr_bot_0_initial_pose_x" default="5.0" />
+	<arg name="bcr_bot_0_initial_pose_y" default="1.0" />
+	<arg name="bcr_bot_0_initial_pose_a" default="0.0" />
+
+	<arg name="bcr_bot_1_initial_pose_x" default="0.0" />
+	<arg name="bcr_bot_1_initial_pose_y" default="-8.0" />
+	<arg name="bcr_bot_1_initial_pose_a" default="0.0" />
+
+	<arg name="bcr_bot_2_initial_pose_x" default="2.5" />
+	<arg name="bcr_bot_2_initial_pose_y" default="8.0" />
+	<arg name="bcr_bot_2_initial_pose_a" default="0.0" />
+
+	<arg name="bcr_bot_3_initial_pose_x" default="-2.5" />
+	<arg name="bcr_bot_3_initial_pose_y" default="8.0" />
+	<arg name="bcr_bot_3_initial_pose_a" default="0.0" />
+
+	<arg name="bcr_bot_4_initial_pose_x" default="-2.5" />
+	<arg name="bcr_bot_4_initial_pose_y" default="-8.0" />
+	<arg name="bcr_bot_4_initial_pose_a" default="0.0" />
 
 	<!-- ............................... LAUNCH WORLD ................................... -->
 
@@ -34,9 +55,9 @@
 
 	<group ns="bcr_bot_0">
 		<arg name="robot_namespace" value="bcr_bot_0" />
-		<arg name="position_x" value="5.0" />
-		<arg name="position_y" value="1.0" />
-		<arg name="orientation_yaw" value="0.0" />
+		<arg name="position_x" value="$(arg bcr_bot_0_initial_pose_x)" />
+		<arg name="position_y" value="$(arg bcr_bot_0_initial_pose_y)" />
+		<arg name="orientation_yaw" value="$(arg bcr_bot_0_initial_pose_a)" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
 			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
@@ -56,9 +77,9 @@
 
 	<group ns="bcr_bot_1">
 		<arg name="robot_namespace" value="bcr_bot_1" />
-		<arg name="position_x" value="0.0" />
-		<arg name="position_y" value="-8.0" />
-		<arg name="orientation_yaw" value="0.0" />
+		<arg name="position_x" value="$(arg bcr_bot_1_initial_pose_x)" />
+		<arg name="position_y" value="$(arg bcr_bot_1_initial_pose_y)" />
+		<arg name="orientation_yaw" value="$(arg bcr_bot_1_initial_pose_a)" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
 			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
@@ -78,9 +99,9 @@
 
 	<group ns="bcr_bot_2">
 		<arg name="robot_namespace" value="bcr_bot_2" />
-		<arg name="position_x" value="2.5" />
-		<arg name="position_y" value="8.0" />
-		<arg name="orientation_yaw" value="0.0" />
+		<arg name="position_x" value="$(arg bcr_bot_2_initial_pose_x)" />
+		<arg name="position_y" value="$(arg bcr_bot_2_initial_pose_y)" />
+		<arg name="orientation_yaw" value="$(arg bcr_bot_2_initial_pose_a)" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
 			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
@@ -100,9 +121,9 @@
 
 	<group ns="bcr_bot_3">
 		<arg name="robot_namespace" value="bcr_bot_3" />
-		<arg name="position_x" value="-2.5" />
-		<arg name="position_y" value="8.0" />
-		<arg name="orientation_yaw" value="0.0" />
+		<arg name="position_x" value="$(arg bcr_bot_3_initial_pose_x)" />
+		<arg name="position_y" value="$(arg bcr_bot_3_initial_pose_y)" />
+		<arg name="orientation_yaw" value="$(arg bcr_bot_3_initial_pose_a)" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
 			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
@@ -122,9 +143,9 @@
 
 	<group ns="bcr_bot_4">
 		<arg name="robot_namespace" value="bcr_bot_4" />
-		<arg name="position_x" value="-2.5" />
-		<arg name="position_y" value="-8.0" />
-		<arg name="orientation_yaw" value="0.0" />
+		<arg name="position_x" value="$(arg bcr_bot_4_initial_pose_x)" />
+		<arg name="position_y" value="$(arg bcr_bot_4_initial_pose_y)" />
+		<arg name="orientation_yaw" value="$(arg bcr_bot_4_initial_pose_a)" />
 
 		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
 			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
