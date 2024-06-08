@@ -35,12 +35,12 @@ class PartSpawner():
 
     def main(self):
         for robot_namespace in self.robots:
-            spawn_result = self.spawnCondition(robot_namespace)
+            spawn_result = self.check_robot_reached_zone(robot_namespace)
             if spawn_result is not None:
-                spawn_condition, spawn_zone = spawn_result
-                if self.checkModel("car_wheel", robot_namespace) == False and spawn_condition == True:
+                is_at_zone, reached_zone = spawn_result
+                if self.checkModel("car_wheel", robot_namespace) == False and is_at_zone == True:
                     spawn_point = Point(
-                        x=self.supply_zones[spawn_zone]['x'], y=self.supply_zones[spawn_zone]['y'], z=0.5)
+                        x=self.supply_zones[reached_zone]['x'], y=self.supply_zones[reached_zone]['y'], z=0.5)
                     self.spawnModel("car_wheel", robot_namespace,
                                     spawn_point, [0, 0, 0])
 
@@ -56,7 +56,7 @@ class PartSpawner():
                 (self.delete_point.z - res.pose.position.z)**2)\
             ** 0.5
 
-    def spawnCondition(self, robot_namespace):
+    def check_robot_reached_zone(self, robot_namespace):
         trans, euler = self.getPose(robot_namespace)
         for zone_name, zone in self.supply_zones.items():
             distance = ((zone['x'] - trans[0])**2 +
@@ -64,6 +64,8 @@ class PartSpawner():
             angle = abs(zone['theta'] - euler[2])
             if distance < self.distance_threshold and angle < self.angle_threshold:
                 return True, zone_name  # robot이 zone에 도달했는 지, 그 zone의 이름을 반환
+            else:
+                return False, None
 
     def spawnModel(self, part, robot_namespace, spawn_point, spawn_angle):
         with open(self.path + part + "/model.sdf", "r") as f:
