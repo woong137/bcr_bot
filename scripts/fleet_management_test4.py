@@ -9,7 +9,9 @@ from gazebo_msgs.srv import DeleteModel, SpawnModel, GetModelState
 from geometry_msgs.msg import Quaternion, Pose, Point
 import threading
 
+
 class FleetManager:
+
     def __init__(self):
         self.bot_zones = {
             "bcr_bot_0": "S1",
@@ -23,7 +25,6 @@ class FleetManager:
 
         pub.publish(target_zone)
 
-
     def main(self):
         threads = []
         for bot_name, zone in self.bot_zones.items():
@@ -35,15 +36,14 @@ class FleetManager:
         for thread in threads:
             thread.join()
 
+
 class PartSpawner():
 
     def __init__(self) -> None:
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path('bcr_bot')+"/models/"
-        self.supply_zones = self.load_zone_coordinates(
-            self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "S")
-        self.demand_zones = self.load_zone_coordinates(
-            self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml", "D")
+        self.zones = self.load_zone_coordinates(
+            self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
         self.robots = ["bcr_bot_0", "bcr_bot_1", "bcr_bot_2"]
@@ -57,21 +57,21 @@ class PartSpawner():
 
     def main(self):
         for robot_namespace in self.robots:
-            is_at_supply_zone, reached_supply_zone = self.check_robot_reached_zone(
-                robot_namespace, self.supply_zones)
+            target_zone = FleetManager().bot_zones[robot_namespace]
+            target_zone_dict = self.zones[target_zone]
+            is_at_zone = self.check_robot_reached_zone(
+                robot_namespace, target_zone_dict)
             has_model = self.checkModel("car_wheel", robot_namespace)
 
-            if has_model == False and is_at_supply_zone == True:
-                print(f"Robot {robot_namespace} is at zone {reached_supply_zone}")
+            if has_model == False and is_at_zone == True:
+                print(f"Robot {robot_namespace} is at zone {target_zone}")
                 spawn_point = Point(
-                    x=self.supply_zones[reached_supply_zone]['x'], y=self.supply_zones[reached_supply_zone]['y'], z=0.5)
+                    x=self.zones[target_zone]['x'], y=self.zones[target_zone]['y'], z=0.5)
                 self.spawnModel("car_wheel", robot_namespace,
                                 spawn_point, [0, 0, 0])
 
-            is_at_demand_zone, reached_demand_zone = self.check_robot_reached_zone(
-                robot_namespace, self.demand_zones)
-            if has_model == True and is_at_demand_zone == True:
-                print(f"Robot {robot_namespace} is at zone {reached_demand_zone}")
+            elif has_model == True and is_at_zone == True:
+                print(f"Robot {robot_namespace} is at zone {target_zone}")
                 self.deleteModel("car_wheel", robot_namespace)
 
     def checkModel(self, part, robot_namespace):
@@ -83,16 +83,15 @@ class PartSpawner():
             # rospy.logerr(f"Service call failed: {e}")
             return False
 
-    def check_robot_reached_zone(self, robot_namespace, zones):
+    def check_robot_reached_zone(self, robot_namespace, zone):
         trans, euler = self.getPose(robot_namespace)
-        for zone_name, zone in zones.items():
-            distance = ((zone['x'] - trans[0])**2 +
-                        (zone['y'] - trans[1])**2)**0.5
-            angle = abs(zone['theta'] - euler[2])
-            if distance < self.distance_threshold and angle < self.angle_threshold:
-                return True, zone_name
-
-        return False, None
+        distance = ((zone['x'] - trans[0])**2 +
+                    (zone['y'] - trans[1])**2)**0.5
+        angle = abs(zone['theta'] - euler[2])
+        if distance < self.distance_threshold and angle < self.angle_threshold:
+            return True
+        else:
+            return False
 
     def spawnModel(self, part, robot_namespace, spawn_point, spawn_angle):
         with open(self.path + part + "/model.sdf", "r") as f:
@@ -127,18 +126,17 @@ class PartSpawner():
             rospy.logerr("TF error: %s", e)
             return None, None
 
-    def load_zone_coordinates(self, yaml_file, zone_startswith):
+    def load_zone_coordinates(self, yaml_file):
         with open(yaml_file, 'r') as file:
             data = yaml.safe_load(file)
             zones = {}
             for zone_name, coords in data['zones'].items():
-                if zone_name.startswith(zone_startswith):
-                    zones[zone_name] = {
-                        'x': coords['x'],
-                        'y': coords['y'],
-                        'theta': coords['theta'],
-                        'part': coords['part']
-                    }
+                zones[zone_name] = {
+                    'x': coords['x'],
+                    'y': coords['y'],
+                    'theta': coords['theta'],
+                    'part': coords['part']
+                }
         return zones
 
 
