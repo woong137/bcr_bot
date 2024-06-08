@@ -9,14 +9,17 @@ from gazebo_msgs.srv import DeleteModel, SpawnModel, GetModelState
 from geometry_msgs.msg import Quaternion, Pose, Point
 import threading
 
+'''
+PartSpawner
+'''
 
 class FleetManager:
 
     def __init__(self):
         self.bot_zones = {
-            "bcr_bot_0": "S1",
-            "bcr_bot_1": "S2",
-            "bcr_bot_2": "S3"
+            "bcr_bot_0": "D1",
+            "bcr_bot_1": "D2",
+            "bcr_bot_2": "D3"
         }
 
     def publish_target_zone(self, bot_name, target_zone):
@@ -58,20 +61,22 @@ class PartSpawner():
     def main(self):
         for robot_namespace in self.robots:
             target_zone = FleetManager().bot_zones[robot_namespace]
-            target_zone_dict = self.zones[target_zone]
+            target_zone_value = self.zones[target_zone]
             is_at_zone = self.check_robot_reached_zone(
-                robot_namespace, target_zone_dict)
-            has_model = self.checkModel("car_wheel", robot_namespace)
+                robot_namespace, target_zone_value)
+            is_supply_zone = target_zone.startswith('S')
+            is_demand_zone = target_zone.startswith('D')
+            has_model = self.checkModel(target_zone_value['part'], robot_namespace)
 
-            if has_model == False and is_at_zone == True:
-                print(f"Robot {robot_namespace} is at zone {target_zone}")
+            if has_model == False and is_at_zone == True and is_supply_zone == True:
+                print(f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 수령했습니다.")
                 spawn_point = Point(
-                    x=self.zones[target_zone]['x'], y=self.zones[target_zone]['y'], z=0.5)
+                    x=target_zone_value['x'], y=target_zone_value['y'], z=0.5)
                 self.spawnModel("car_wheel", robot_namespace,
                                 spawn_point, [0, 0, 0])
 
-            elif has_model == True and is_at_zone == True:
-                print(f"Robot {robot_namespace} is at zone {target_zone}")
+            elif has_model == True and is_at_zone == True and is_demand_zone == True:
+                print(f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
                 self.deleteModel("car_wheel", robot_namespace)
 
     def checkModel(self, part, robot_namespace):
