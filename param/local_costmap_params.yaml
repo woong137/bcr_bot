@@ -1,7 +1,7 @@
 local_costmap:
   global_frame: odom
   robot_base_frame: base_footprint
-  update_frequency: 20
+  update_frequency: 10
   publish_frequency: 0.5
   rolling_window: true
   width: 6.0
