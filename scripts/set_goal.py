@@ -41,13 +41,14 @@ def movebase_client(x, y, theta):
 
 def target_zone_callback(msg):
     zone_name = msg.data
-    rospy.loginfo(f"Received target zone: {zone_name}")
+    # rospy.loginfo(f"Received target zone: {zone_name}")
 
     try:
         x, y, theta = load_zone_coordinates('../warehouse_robot_project/src/bcr_bot/param/zone_coordinates.yaml', zone_name)
         result = movebase_client(x, y, theta)
         if result:
-            rospy.loginfo("목표 지점에 도달했습니다.")
+            # rospy.loginfo("목표 지점에 도달했습니다.")
+            pass
         else:
             rospy.logerr("목표 지점으로의 이동에 실패했습니다.")
     except KeyError:
