@@ -10,7 +10,20 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 import threading
 
 '''
-PartSpawner
+# AMR
+1. 각 셀의 부품 현황 확인
+2. 부품이 부족하면 근처에 있는 AMR에게 부품을 요청
+3. 부품을 요청받은 AMR은 부품을 공급받은 후 부품이 필요한 셀로 이동하여 부품 공급
+4. 작업이 끝나면 대기 장소로 이동
+
+# AGV
+
+# 기타
+각 셀의 부품 현황
+사용 가능한 셀
+각 셀의 공정 진행도 출력
+각 로봇의 임무 출력
+
 '''
 
 class FleetManager:
