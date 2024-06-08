@@ -49,10 +49,6 @@ class PartSpawner():
         res = self.model_state(part_name, "world")
         return res.success
 
-    # def getPosition(self):
-    #     res = self.model_state(self.part_name, "world")
-    #     return res.pose.position.z
-
     def getDistance(self):
         res = self.model_state(self.part_name, "world")
         return ((self.delete_point.x - res.pose.position.x)**2 +
