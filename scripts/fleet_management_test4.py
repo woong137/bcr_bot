@@ -32,7 +32,9 @@ class FleetManager:
         self.bot_zones = {
             "bcr_bot_0": "D1",
             "bcr_bot_1": "D2",
-            "bcr_bot_2": "D3"
+            "bcr_bot_2": "D3",
+            "bcr_bot_3": "D4",
+            "bcr_bot_4": "D5",
         }
 
     def publish_target_zone(self, bot_name, target_zone):
@@ -62,7 +64,7 @@ class PartSpawner():
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
-        self.robots = ["bcr_bot_0", "bcr_bot_1", "bcr_bot_2"]
+        self.robots = ["bcr_bot_0", "bcr_bot_1", "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
