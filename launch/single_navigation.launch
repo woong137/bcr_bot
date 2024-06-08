@@ -58,7 +58,7 @@
   </node>
 
   <!-- move_base -->
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base">
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
     <rosparam file="$(find bcr_bot)/param/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find bcr_bot)/param/costmap_common_params.yaml" command="load" ns="local_costmap" />
