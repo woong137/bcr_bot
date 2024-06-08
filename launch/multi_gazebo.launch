@@ -97,4 +97,49 @@
 			<arg name="odometry_source" value="$(arg odometry_source)" />
 		</include>
 	</group>
+
+	<group ns="bcr_bot_3">
+		<arg name="robot_namespace" value="bcr_bot_3" />
+		<arg name="position_x" value="-2.5" />
+		<arg name="position_y" value="8.0" />
+		<arg name="orientation_yaw" value="0.0" />
+
+		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
+			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
+			<arg name="camera_enabled" value="$(arg camera_enabled)" />
+			<arg name="stereo_camera_enabled" value="$(arg stereo_camera_enabled)" />
+			<arg name="wheel_odom_topic" value="$(arg wheel_odom_topic)" />
+			<arg name="publish_wheel_odom_tf" value="$(arg publish_wheel_odom_tf)" />
+			<arg name="conveyor_enabled" value="$(arg conveyor_enabled)" />
+			<arg name="ground_truth_frame" value="$(arg ground_truth_frame)" />
+			<arg name="robot_namespace" value="$(arg robot_namespace)" />
+			<arg name="position_x" value="$(arg position_x)" />
+			<arg name="position_y" value="$(arg position_y)" />
+			<arg name="orientation_yaw" value="$(arg orientation_yaw)" />
+			<arg name="odometry_source" value="$(arg odometry_source)" />
+		</include>
+	</group>
+
+	<group ns="bcr_bot_4">
+		<arg name="robot_namespace" value="bcr_bot_4" />
+		<arg name="position_x" value="-2.5" />
+		<arg name="position_y" value="-8.0" />
+		<arg name="orientation_yaw" value="0.0" />
+
+		<include file="$(find bcr_bot)/launch/bcr_bot_spawn.launch">
+			<arg name="two_d_lidar_enabled" value="$(arg two_d_lidar_enabled)" />
+			<arg name="camera_enabled" value="$(arg camera_enabled)" />
+			<arg name="stereo_camera_enabled" value="$(arg stereo_camera_enabled)" />
+			<arg name="wheel_odom_topic" value="$(arg wheel_odom_topic)" />
+			<arg name="publish_wheel_odom_tf" value="$(arg publish_wheel_odom_tf)" />
+			<arg name="conveyor_enabled" value="$(arg conveyor_enabled)" />
+			<arg name="ground_truth_frame" value="$(arg ground_truth_frame)" />
+			<arg name="robot_namespace" value="$(arg robot_namespace)" />
+			<arg name="position_x" value="$(arg position_x)" />
+			<arg name="position_y" value="$(arg position_y)" />
+			<arg name="orientation_yaw" value="$(arg orientation_yaw)" />
+			<arg name="odometry_source" value="$(arg odometry_source)" />
+		</include>
+	</group>
+
 </launch>
