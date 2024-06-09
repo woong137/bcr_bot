@@ -13,8 +13,9 @@ import threading
 # AMR
 1. 각 셀의 부품 현황 확인
 2. 부품이 부족하면 근처에 있는 AMR에게 부품을 요청
-3. 부품을 요청받은 AMR은 부품을 공급받은 후 부품이 필요한 셀로 이동하여 부품 공급
-4. 작업이 끝나면 대기 장소로 이동
+3. 부품을 요청받은 AMR은 가까운 부품을 수령 구역으로 이동 후 부품 수령하기
+4. 부품 수령한 후 부품이 필요한 셀로 이동하여 부품 공급
+5. 작업이 끝나면 대기 장소로 이동
 
 # AGV
 
@@ -41,10 +42,8 @@ class FleetManagerMain():
     셀이 부품이 필요한 지 확인
         current_count가 required_count * excess_part_ratio보다 작으면 부품을 요청
 
-    가까운 로봇에게 부품을 요청
-        가장 가까운 로봇 찾기
-        그 로봇이 작업 중이면 다음으로 넘어가기
-        로봇에게 부품을 요청
+    셀에 필요한 부품을 수령할 수 있는 구역들 찾기
+    그 구역들과 가장 가까운 임무 없는 로봇에게 부품을 요청
 
     current_count가 required_count보다 크고 AGV가 셀에 도착하면
         해당 셀의 is_working을 True로 변경
@@ -56,17 +55,98 @@ class FleetManagerMain():
 
     '''
 
+    def __init__(self):
+        self.excess_part_ratio = 3
+        self.cells_needing_parts = {"C1": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
+                                    "C2": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
+                                    "C3": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
+                                    "C4": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
+                                    "C5": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
+                                    }
+        # TODO: previous_zone에 스폰 지점 넣기
+        self.robots = {"bcr_bot_0": {"previous_zone": None, "target_zone": None, "is_working": False},
+                       "bcr_bot_1": {"previous_zone": None, "target_zone": None, "is_working": False},
+                       "bcr_bot_2": {"previous_zone": None, "target_zone": None, "is_working": False},
+                       "bcr_bot_3": {"previous_zone": None, "target_zone": None, "is_working": False},
+                       "bcr_bot_4": {"previous_zone": None, "target_zone": None, "is_working": False},
+                       }
+        self.zones = load_zone_coordinates(
+            rospkg.RosPack().get_path('bcr_bot')+"/param/zone_coordinates.yaml")
+        # TODO: 초기 로봇 위치를 스폰 지점으로 설정
+        self.robot_pose = {"bcr_bot_0": {"x": 0, "y": 0, "theta": 0},
+                           "bcr_bot_1": {"x": 0, "y": 0, "theta": 0},
+                           "bcr_bot_2": {"x": 0, "y": 0, "theta": 0},
+                           "bcr_bot_3": {"x": 0, "y": 0, "theta": 0},
+                           "bcr_bot_4": {"x": 0, "y": 0, "theta": 0},
+                           }
+
+    def main(self):
+        self.update_robot_pose()
+        self.request_part()
+        self.print_data()
+
+    def request_part(self):
+        for cell_name, cell_data in self.cells_needing_parts.items():
+            if cell_data["current_count"] < cell_data["required_count"] * self.excess_part_ratio:
+                target_part = self.cells_needing_parts[cell_name]["part"]
+                target_zones = self.find_zones_with_part(
+                    self.zones, target_part)
+                for target_zone in target_zones:
+                    # TODO: 루프 돌때마다 찾지 않도록 수정
+                    nearest_free_robot = self.find_nearest_free_robot(
+                        target_zone)
+                    self.robots[nearest_free_robot]["is_working"] = True
+                    self.robots[nearest_free_robot]["target_zone"] = target_zone
+
+    def update_robot_pose(self):
+        for robot_namespace, pose in self.robot_pose.items():
+            trans, euler = getPose(robot_namespace)
+            self.robot_pose[robot_namespace]['x'] = trans[0]
+            self.robot_pose[robot_namespace]['y'] = trans[1]
+            self.robot_pose[robot_namespace]['theta'] = euler[2]
+
+    def find_nearest_free_robot(self, zone_name):
+        nearest_distance = 100000
+        nearest_free_robot = None
+        for robot_namespace, robot_data in self.robots.items():
+            if robot_data["is_working"] == False:
+                dx = self.zones[zone_name]['x'] - \
+                    self.robot_pose[robot_namespace]['x']
+                dy = self.zones[zone_name]['y'] - \
+                    self.robot_pose[robot_namespace]['y']
+                distance = (dx**2 + dy**2)**0.5
+                if distance < nearest_distance:
+                    nearest_distance = distance
+                    nearest_free_robot = robot_namespace
+        return nearest_free_robot
+
+    def find_zones_with_part(zones, desired_part):
+        result = []
+        for zone_name, attributes in zones.items():
+            if attributes.get('part') == desired_part:
+                result.append(zone_name)
+        return result
+
+    def print_data(self):
+        print("Cells needing parts:")
+        for cell_name, cell_data in self.cells_needing_parts.items():
+            print(f"{cell_name}: {cell_data}")
+        print("\nRobots:")
+        for robot_namespace, robot_data in self.robots.items():
+            print(f"{robot_namespace}: {robot_data}")
+
 
 class FleetManagerAMR():
 
     def __init__(self):
-        self.bot_zones = {
-            "bcr_bot_0": "D1",
-            "bcr_bot_1": "D2",
-            "bcr_bot_2": "D3",
-            "bcr_bot_3": "D4",
-            "bcr_bot_4": "D5",
+        self.target_zones = {
+            "bcr_bot_0": FleetManagerMain().robots["bcr_bot_0"]["target_zone"],
+            "bcr_bot_1": FleetManagerMain().robots["bcr_bot_1"]["target_zone"],
+            "bcr_bot_2": FleetManagerMain().robots["bcr_bot_2"]["target_zone"],
+            "bcr_bot_3": FleetManagerMain().robots["bcr_bot_3"]["target_zone"],
+            "bcr_bot_4": FleetManagerMain().robots["bcr_bot_4"]["target_zone"],
         }
+        self.waiting_zones = ["bcr_bot_1": "W1", "bcr_bot_2": "W2", "bcr_bot_3": "W3", "bcr_bot_4": "W4"]
 
     def publish_target_zone(self, bot_name, target_zone):
         topic_name = f"/{bot_name}/target_zone"
@@ -76,9 +156,13 @@ class FleetManagerAMR():
 
     def main(self):
         threads = []
-        for bot_name, zone in self.bot_zones.items():
+        for bot_name, zone in self.target_zones.items():
+            if zone is None:
+                target_zone = self.waiting_zones[bot_name]
+            else:
+                target_zone = zone
             thread = threading.Thread(
-                target=self.publish_target_zone, args=(bot_name, zone))
+                target=self.publish_target_zone, args=(bot_name, target_zone))
             thread.start()
             threads.append(thread)
 
@@ -91,7 +175,7 @@ class PartSpawner():
     def __init__(self) -> None:
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path('bcr_bot')+"/models/"
-        self.zones = self.load_zone_coordinates(
+        self.zones = load_zone_coordinates(
             self.rospack.get_path('bcr_bot')+"/param/zone_coordinates.yaml")
         self.distance_threshold = 0.5
         self.angle_threshold = 0.1
@@ -107,7 +191,7 @@ class PartSpawner():
 
     def main(self):
         for robot_namespace in self.robots:
-            target_zone = FleetManager().bot_zones[robot_namespace]
+            target_zone = FleetManagerAMR().target_zones[robot_namespace]
             target_zone_value = self.zones[target_zone]
             is_at_zone = self.check_robot_reached_zone(
                 robot_namespace, target_zone_value)
@@ -139,7 +223,7 @@ class PartSpawner():
             return False
 
     def check_robot_reached_zone(self, robot_namespace, zone):
-        trans, euler = self.getPose(robot_namespace)
+        trans, euler = getPose(robot_namespace)
         distance = ((zone['x'] - trans[0])**2 +
                     (zone['y'] - trans[1])**2)**0.5
         angle = abs(zone['theta'] - euler[2])
@@ -167,32 +251,35 @@ class PartSpawner():
         self.delete_model(part_name)
         rospy.sleep(1)
 
-    def getPose(self, robot_namespace):
-        listener = tf.TransformListener()
-        try:
-            listener.waitForTransform(
-                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(5.0))
-            (trans, rot) = listener.lookupTransform(
-                'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
-            euler = tf.transformations.euler_from_quaternion(rot)
-            return trans, euler
 
-        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
-            rospy.logerr("TF error: %s", e)
-            return None, None
+def getPose(robot_namespace):
+    listener = tf.TransformListener()
+    try:
+        listener.waitForTransform(
+            'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(5.0))
+        (trans, rot) = listener.lookupTransform(
+            'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
+        euler = tf.transformations.euler_from_quaternion(rot)
+        return trans, euler
 
-    def load_zone_coordinates(self, yaml_file):
-        with open(yaml_file, 'r') as file:
-            data = yaml.safe_load(file)
-            zones = {}
-            for zone_name, coords in data['zones'].items():
-                zones[zone_name] = {
-                    'x': coords['x'],
-                    'y': coords['y'],
-                    'theta': coords['theta'],
-                    'part': coords['part']
-                }
-        return zones
+    except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException) as e:
+        rospy.logerr("TF error: %s", e)
+        return None, None
+
+
+def load_zone_coordinates(yaml_file):
+    # zones = {zone_name: {x: x, y: y, theta: theta, part: part}, ...}
+    with open(yaml_file, 'r') as file:
+        data = yaml.safe_load(file)
+        zones = {}
+        for zone_name, coords in data['zones'].items():
+            zones[zone_name] = {
+                'x': coords['x'],
+                'y': coords['y'],
+                'theta': coords['theta'],
+                'part': coords['part']
+            }
+    return zones
 
 
 if __name__ == "__main__":
@@ -202,11 +289,13 @@ if __name__ == "__main__":
     rospy.wait_for_service("/gazebo/spawn_sdf_model")
     rospy.wait_for_service("/gazebo/get_model_state")
 
-    fleet_manager = FleetManagerAMR()
+    fleet_manager_main = FleetManagerMain()
+    fleet_manager_amr = FleetManagerAMR()
     part_spawner = PartSpawner()
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        fleet_manager.main()
+        fleet_manager_main.main()
+        fleet_manager_amr.main()
         part_spawner.main()
         rate.sleep()
