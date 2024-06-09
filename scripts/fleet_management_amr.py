@@ -49,12 +49,11 @@ class FleetManagerAMR:
             target_zone = zones[current_index]
             thread = threading.Thread(
                 target=self.publish_target_zone, args=(bot_name, target_zone))
+            print(f"{bot_name} 로봇의 목표 구역: {target_zone}")
             thread.start()
             threads.append(thread)
         for thread in threads:
             thread.join()
-        # 각 로봇의 현재 목표 구역을 출력
-        rospy.loginfo(self.current_zones)
 
 
 class PartSpawner:
