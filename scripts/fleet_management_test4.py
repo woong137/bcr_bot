@@ -215,7 +215,7 @@ class PartSpawner():
                     f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
                 self.deleteModel("car_wheel", robot_namespace)
                 FleetManagerMain(
-                ).cells_needing_parts["D"+target_zone[1]]["current_count"] += 1
+                ).cells_needing_parts["C"+target_zone[1]]["current_count"] += 1
 
     def checkModel(self, part, robot_namespace):
         part_name = f"{part}({robot_namespace})"
