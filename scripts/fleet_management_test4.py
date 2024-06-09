@@ -63,12 +63,11 @@ class FleetManagerMain():
                                     "C4": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
                                     "C5": {"part": "car_wheel", "current_count": 0, "required_count": 4, "is_working": False, "work_progress": 0},
                                     }
-        # TODO: previous_zone에 스폰 지점 넣기
-        self.robots = {"bcr_bot_0": {"previous_zone": None, "target_zone": None, "is_working": False},
-                       "bcr_bot_1": {"previous_zone": None, "target_zone": None, "is_working": False},
-                       "bcr_bot_2": {"previous_zone": None, "target_zone": None, "is_working": False},
-                       "bcr_bot_3": {"previous_zone": None, "target_zone": None, "is_working": False},
-                       "bcr_bot_4": {"previous_zone": None, "target_zone": None, "is_working": False},
+        self.robots = {"bcr_bot_0": {"target_zone": None, "is_working": False},
+                       "bcr_bot_1": {"target_zone": None, "is_working": False},
+                       "bcr_bot_2": {"target_zone": None, "is_working": False},
+                       "bcr_bot_3": {"target_zone": None, "is_working": False},
+                       "bcr_bot_4": {"target_zone": None, "is_working": False},
                        }
         self.zones = load_zone_coordinates(
             rospkg.RosPack().get_path('bcr_bot')+"/param/zone_coordinates.yaml")
@@ -89,14 +88,14 @@ class FleetManagerMain():
         for cell_name, cell_data in self.cells_needing_parts.items():
             if cell_data["current_count"] < cell_data["required_count"] * self.excess_part_ratio:
                 target_part = self.cells_needing_parts[cell_name]["part"]
-                target_zones = self.find_zones_with_part(
-                    self.zones, target_part)
+                target_zones = self.find_zones_with_part(self.zones, target_part)
                 for target_zone in target_zones:
                     # TODO: 루프 돌때마다 찾지 않도록 수정
                     nearest_free_robot = self.find_nearest_free_robot(
                         target_zone)
-                    self.robots[nearest_free_robot]["is_working"] = True
-                    self.robots[nearest_free_robot]["target_zone"] = target_zone
+                    if nearest_free_robot is not None:
+                        self.robots[nearest_free_robot]["is_working"] = True
+                        self.robots[nearest_free_robot]["target_zone"] = target_zone
 
     def update_robot_pose(self):
         for robot_namespace, pose in self.robot_pose.items():
@@ -120,7 +119,7 @@ class FleetManagerMain():
                     nearest_free_robot = robot_namespace
         return nearest_free_robot
 
-    def find_zones_with_part(zones, desired_part):
+    def find_zones_with_part(self, zones, desired_part):
         result = []
         for zone_name, attributes in zones.items():
             if attributes.get('part') == desired_part:
@@ -146,7 +145,8 @@ class FleetManagerAMR():
             "bcr_bot_3": FleetManagerMain().robots["bcr_bot_3"]["target_zone"],
             "bcr_bot_4": FleetManagerMain().robots["bcr_bot_4"]["target_zone"],
         }
-        self.waiting_zones = ["bcr_bot_1": "W1", "bcr_bot_2": "W2", "bcr_bot_3": "W3", "bcr_bot_4": "W4"]
+        self.waiting_zones = {"bcr_bot_0": "W1", "bcr_bot_1": "W2",
+                              "bcr_bot_2": "W3", "bcr_bot_3": "W4", "bcr_bot_4": "W5"}
 
     def publish_target_zone(self, bot_name, target_zone):
         topic_name = f"/{bot_name}/target_zone"
@@ -192,6 +192,8 @@ class PartSpawner():
     def main(self):
         for robot_namespace in self.robots:
             target_zone = FleetManagerAMR().target_zones[robot_namespace]
+            if target_zone is None:
+                continue
             target_zone_value = self.zones[target_zone]
             is_at_zone = self.check_robot_reached_zone(
                 robot_namespace, target_zone_value)
@@ -212,6 +214,8 @@ class PartSpawner():
                 print(
                     f"{robot_namespace}로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
                 self.deleteModel("car_wheel", robot_namespace)
+                FleetManagerMain(
+                ).cells_needing_parts["D"+target_zone[1]]["current_count"] += 1
 
     def checkModel(self, part, robot_namespace):
         part_name = f"{part}({robot_namespace})"
@@ -246,7 +250,6 @@ class PartSpawner():
         rospy.sleep(1)
 
     def deleteModel(self, part, robot_namespace):
-
         part_name = part + "(" + robot_namespace + ")"
         self.delete_model(part_name)
         rospy.sleep(1)
