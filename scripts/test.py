@@ -13,38 +13,48 @@ import threading
 class FleetManagerAMR:
     def __init__(self):
         self.target_zones = {
-            "bcr_bot_0": "S1",
-            "bcr_bot_1": "S2",
-            "bcr_bot_2": "S3",
-            "bcr_bot_3": "S4",
-            "bcr_bot_4": "S5",
+            "bcr_bot_0": ["S1", "D1"],
+            "bcr_bot_1": ["S2", "D2"],
+            "bcr_bot_2": ["S3", "D3"],
+            "bcr_bot_3": ["S4", "D4"],
+            "bcr_bot_4": ["S5", "D5"],
         }
+        self.current_zones = {
+            bot: 0 for bot in self.target_zones.keys()}  # 현재 목표 구역 인덱스
         self.publishers = {bot_name: rospy.Publisher(
             f"/{bot_name}/target_zone", String, queue_size=10) for bot_name in self.target_zones.keys()}
-
-    def main(self, part_spawner):
-        self.update_target_zones(part_spawner)
-        threads = []
-        for bot_name, zone in self.target_zones.items():
-            thread = threading.Thread(
-                target=self.publish_target_zone, args=(bot_name, zone))
-            thread.start()
-            threads.append(thread)
-        for thread in threads:
-            thread.join()
-
-    def update_target_zones(self, part_spawner):
-        for robot_namespace, target_zone in self.target_zones.items():
-            target_zone_value = part_spawner.zones[target_zone]
-            has_model = part_spawner.check_model(
-                target_zone_value['part'], robot_namespace)
-            if has_model:
-                self.target_zones[robot_namespace] = target_zone.replace(
-                    'S', 'D')
 
     def publish_target_zone(self, bot_name, target_zone):
         pub = self.publishers[bot_name]
         pub.publish(target_zone)
+
+    def update_target_zones(self, part_spawner):
+        for robot_namespace, zones in self.target_zones.items():
+            current_index = self.current_zones[robot_namespace]
+            target_zone = zones[current_index]
+            target_zone_value = part_spawner.zones[target_zone]
+            has_model = part_spawner.check_model(
+                target_zone_value['part'], robot_namespace)
+
+            if current_index == 0 and has_model:  # Supply to Demand
+                self.current_zones[robot_namespace] = 1
+            elif current_index == 1 and not has_model:  # Demand to Supply
+                self.current_zones[robot_namespace] = 0
+
+    def main(self, part_spawner):
+        self.update_target_zones(part_spawner)
+        threads = []
+        for bot_name, zones in self.target_zones.items():
+            current_index = self.current_zones[bot_name]
+            target_zone = zones[current_index]
+            thread = threading.Thread(
+                target=self.publish_target_zone, args=(bot_name, target_zone))
+            thread.start()
+            threads.append(thread)
+        for thread in threads:
+            thread.join()
+        # 각 로봇의 현재 목표 구역을 출력
+        rospy.loginfo(self.current_zones)
 
 
 class PartSpawner:
@@ -53,7 +63,7 @@ class PartSpawner:
         self.path = self.rospack.get_path('bcr_bot') + "/models/"
         self.zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot') + "/param/zone_coordinates.yaml")
-        self.distance_threshold = 0.15
+        self.distance_threshold = 0.11
         self.angle_threshold = 0.1
         self.robots = ["bcr_bot_0", "bcr_bot_1",
                        "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
@@ -67,7 +77,8 @@ class PartSpawner:
 
     def main(self, fleet_manager_amr):
         for robot_namespace in self.robots:
-            target_zone = fleet_manager_amr.target_zones[robot_namespace]
+            target_zone = fleet_manager_amr.target_zones[robot_namespace][
+                fleet_manager_amr.current_zones[robot_namespace]]
             target_zone_value = self.zones[target_zone]
             is_at_zone = self.check_robot_reached_zone(
                 robot_namespace, target_zone_value)
@@ -132,7 +143,7 @@ class PartSpawner:
         listener = tf.TransformListener()
         try:
             listener.waitForTransform(
-                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(5.0))
+                'map', f'{robot_namespace}/base_footprint', rospy.Time(), rospy.Duration(10.0))
             (trans, rot) = listener.lookupTransform(
                 'map', f'{robot_namespace}/base_footprint', rospy.Time(0))
             euler = tf.transformations.euler_from_quaternion(rot)
