@@ -1,7 +1,7 @@
 obstacle_range: 3.0
 raytrace_range: 3.5
 footprint: [[0.45, 0.32], [0.45, -0.32], [-0.45, -0.32], [-0.45, 0.32]]
-cost_scaling_factor: 0.5
+cost_scaling_factor: 5.0
 transform_tolerance: 0.2
 
 static_layer:
