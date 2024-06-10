@@ -5,7 +5,11 @@ cost_scaling_factor: 5.0
 transform_tolerance: 0.2
 
 static_layer:
-  map_topic: "map"
+  map_topic: "/map"
+  subscribe_to_updates: true
+
+prohibition_layer:
+  map_topic: "/prohibition_map"
   subscribe_to_updates: true
 
 obstacle_layer:

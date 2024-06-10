@@ -1,101 +1,109 @@
 <launch>
-  <arg name="set_map_frame"  default="map"/>
+  <arg name="set_map_frame" default="map" />
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server"
-      args="$(find bcr_bot)/maps/small_warehouse_edit.yaml">
-    <param name="frame_id" value="$(arg set_map_frame)"/>
+    args="$(find bcr_bot)/maps/small_warehouse_edit.yaml">
+    <param name="frame_id" value="$(arg set_map_frame)" />
   </node>
-	<!-- INITIAL POSE -->
 
-	<arg name="bcr_bot_0_initial_pose_x" default="5.0" />
-	<arg name="bcr_bot_0_initial_pose_y" default="1.0" />
-	<arg name="bcr_bot_0_initial_pose_a" default="0.0" />
+  <!-- Map server -->
+  <node pkg="map_server" name="prohibition_map_server" type="map_server"
+    args="$(find bcr_bot)/maps/no_roof_small_warehouse.yaml">
+    <param name="frame_id" value="$(arg set_map_frame)" />
+    <remap from="/map" to="/prohibition_map"/>
+  </node>
 
-	<arg name="bcr_bot_1_initial_pose_x" default="0.0" />
-	<arg name="bcr_bot_1_initial_pose_y" default="-8.0" />
-	<arg name="bcr_bot_1_initial_pose_a" default="0.0" />
+  <!-- INITIAL POSE -->
 
-	<arg name="bcr_bot_2_initial_pose_x" default="2.5" />
-	<arg name="bcr_bot_2_initial_pose_y" default="8.0" />
-	<arg name="bcr_bot_2_initial_pose_a" default="0.0" />
+  <arg name="bcr_bot_0_initial_pose_x" default="5.0" />
+  <arg name="bcr_bot_0_initial_pose_y" default="1.0" />
+  <arg name="bcr_bot_0_initial_pose_a" default="0.0" />
 
-	<arg name="bcr_bot_3_initial_pose_x" default="-2.5" />
-	<arg name="bcr_bot_3_initial_pose_y" default="8.0" />
-	<arg name="bcr_bot_3_initial_pose_a" default="0.0" />
+  <arg name="bcr_bot_1_initial_pose_x" default="0.0" />
+  <arg name="bcr_bot_1_initial_pose_y" default="-8.0" />
+  <arg name="bcr_bot_1_initial_pose_a" default="0.0" />
 
-	<arg name="bcr_bot_4_initial_pose_x" default="-2.5" />
-	<arg name="bcr_bot_4_initial_pose_y" default="-8.0" />
-	<arg name="bcr_bot_4_initial_pose_a" default="0.0" />
+  <arg name="bcr_bot_2_initial_pose_x" default="2.5" />
+  <arg name="bcr_bot_2_initial_pose_y" default="8.0" />
+  <arg name="bcr_bot_2_initial_pose_a" default="0.0" />
+
+  <arg name="bcr_bot_3_initial_pose_x" default="-2.5" />
+  <arg name="bcr_bot_3_initial_pose_y" default="8.0" />
+  <arg name="bcr_bot_3_initial_pose_a" default="0.0" />
+
+  <arg name="bcr_bot_4_initial_pose_x" default="-2.5" />
+  <arg name="bcr_bot_4_initial_pose_y" default="-8.0" />
+  <arg name="bcr_bot_4_initial_pose_a" default="0.0" />
 
   <!-- launch the navigation stacks of 3 bcr_bots-->
-  <arg name="bcr_bot_0_prefix" value="bcr_bot_0"/>
-  <group ns="$(arg bcr_bot_0_prefix)">"
-    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen"/>
+  <arg name="bcr_bot_0_prefix" value="bcr_bot_0" />
+  <group ns="$(arg bcr_bot_0_prefix)">" <node pkg="bcr_bot" type="set_goal.py" name="set_goal"
+      output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_0_prefix)/base_footprint"/>
-      <arg name="set_odom_frame" value="$(arg bcr_bot_0_prefix)/odom"/>
-      <arg name="set_scan_frame" value="$(arg bcr_bot_0_prefix)/scan"/>
-      <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="$(arg bcr_bot_0_initial_pose_x)"/>
-      <arg name="initial_pose_y" default="$(arg bcr_bot_0_initial_pose_y)"/>
-      <arg name="initial_pose_a" default="$(arg bcr_bot_0_initial_pose_a)"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_0_prefix)/base_footprint" />
+      <arg name="set_odom_frame" value="$(arg bcr_bot_0_prefix)/odom" />
+      <arg name="set_scan_frame" value="$(arg bcr_bot_0_prefix)/scan" />
+      <arg name="set_map_frame" value="$(arg set_map_frame)" />
+      <arg name="initial_pose_x" default="$(arg bcr_bot_0_initial_pose_x)" />
+      <arg name="initial_pose_y" default="$(arg bcr_bot_0_initial_pose_y)" />
+      <arg name="initial_pose_a" default="$(arg bcr_bot_0_initial_pose_a)" />
     </include>
   </group>
 
-  <arg name="bcr_bot_1_prefix" value="bcr_bot_1"/>
+  <arg name="bcr_bot_1_prefix" value="bcr_bot_1" />
   <group ns="$(arg bcr_bot_1_prefix)">
-    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen"/>
+    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_1_prefix)/base_footprint"/>
-      <arg name="set_odom_frame" value="$(arg bcr_bot_1_prefix)/odom"/>
-      <arg name="set_scan_frame" value="$(arg bcr_bot_1_prefix)/scan"/>
-      <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="$(arg bcr_bot_1_initial_pose_x)"/>
-      <arg name="initial_pose_y" default="$(arg bcr_bot_1_initial_pose_y)"/>
-      <arg name="initial_pose_a" default="$(arg bcr_bot_1_initial_pose_a)"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_1_prefix)/base_footprint" />
+      <arg name="set_odom_frame" value="$(arg bcr_bot_1_prefix)/odom" />
+      <arg name="set_scan_frame" value="$(arg bcr_bot_1_prefix)/scan" />
+      <arg name="set_map_frame" value="$(arg set_map_frame)" />
+      <arg name="initial_pose_x" default="$(arg bcr_bot_1_initial_pose_x)" />
+      <arg name="initial_pose_y" default="$(arg bcr_bot_1_initial_pose_y)" />
+      <arg name="initial_pose_a" default="$(arg bcr_bot_1_initial_pose_a)" />
     </include>
   </group>
 
-  <arg name="bcr_bot_2_prefix" value="bcr_bot_2"/>
+  <arg name="bcr_bot_2_prefix" value="bcr_bot_2" />
   <group ns="$(arg bcr_bot_2_prefix)">
-    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen"/>
+    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_2_prefix)/base_footprint"/>
-      <arg name="set_odom_frame" value="$(arg bcr_bot_2_prefix)/odom"/>
-      <arg name="set_scan_frame" value="$(arg bcr_bot_2_prefix)/scan"/>
-      <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="$(arg bcr_bot_2_initial_pose_x)"/>
-      <arg name="initial_pose_y" default="$(arg bcr_bot_2_initial_pose_y)"/>
-      <arg name="initial_pose_a" default="$(arg bcr_bot_2_initial_pose_a)"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_2_prefix)/base_footprint" />
+      <arg name="set_odom_frame" value="$(arg bcr_bot_2_prefix)/odom" />
+      <arg name="set_scan_frame" value="$(arg bcr_bot_2_prefix)/scan" />
+      <arg name="set_map_frame" value="$(arg set_map_frame)" />
+      <arg name="initial_pose_x" default="$(arg bcr_bot_2_initial_pose_x)" />
+      <arg name="initial_pose_y" default="$(arg bcr_bot_2_initial_pose_y)" />
+      <arg name="initial_pose_a" default="$(arg bcr_bot_2_initial_pose_a)" />
     </include>
   </group>
 
-  <arg name="bcr_bot_3_prefix" value="bcr_bot_3"/>
+  <arg name="bcr_bot_3_prefix" value="bcr_bot_3" />
   <group ns="$(arg bcr_bot_3_prefix)">
-    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen"/>
+    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_3_prefix)/base_footprint"/>
-      <arg name="set_odom_frame" value="$(arg bcr_bot_3_prefix)/odom"/>
-      <arg name="set_scan_frame" value="$(arg bcr_bot_3_prefix)/scan"/>
-      <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="$(arg bcr_bot_3_initial_pose_x)"/>
-      <arg name="initial_pose_y" default="$(arg bcr_bot_3_initial_pose_y)"/>
-      <arg name="initial_pose_a" default="$(arg bcr_bot_3_initial_pose_a)"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_3_prefix)/base_footprint" />
+      <arg name="set_odom_frame" value="$(arg bcr_bot_3_prefix)/odom" />
+      <arg name="set_scan_frame" value="$(arg bcr_bot_3_prefix)/scan" />
+      <arg name="set_map_frame" value="$(arg set_map_frame)" />
+      <arg name="initial_pose_x" default="$(arg bcr_bot_3_initial_pose_x)" />
+      <arg name="initial_pose_y" default="$(arg bcr_bot_3_initial_pose_y)" />
+      <arg name="initial_pose_a" default="$(arg bcr_bot_3_initial_pose_a)" />
     </include>
   </group>
 
-  <arg name="bcr_bot_4_prefix" value="bcr_bot_4"/>
+  <arg name="bcr_bot_4_prefix" value="bcr_bot_4" />
   <group ns="$(arg bcr_bot_4_prefix)">
-    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen"/>
+    <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
-      <arg name="set_base_frame" value="$(arg bcr_bot_4_prefix)/base_footprint"/>
-      <arg name="set_odom_frame" value="$(arg bcr_bot_4_prefix)/odom"/>
-      <arg name="set_scan_frame" value="$(arg bcr_bot_4_prefix)/scan"/>
-      <arg name="set_map_frame" value="$(arg set_map_frame)"/>
-      <arg name="initial_pose_x" default="$(arg bcr_bot_4_initial_pose_x)"/>
-      <arg name="initial_pose_y" default="$(arg bcr_bot_4_initial_pose_y)"/>
-      <arg name="initial_pose_a" default="$(arg bcr_bot_4_initial_pose_a)"/>
+      <arg name="set_base_frame" value="$(arg bcr_bot_4_prefix)/base_footprint" />
+      <arg name="set_odom_frame" value="$(arg bcr_bot_4_prefix)/odom" />
+      <arg name="set_scan_frame" value="$(arg bcr_bot_4_prefix)/scan" />
+      <arg name="set_map_frame" value="$(arg set_map_frame)" />
+      <arg name="initial_pose_x" default="$(arg bcr_bot_4_initial_pose_x)" />
+      <arg name="initial_pose_y" default="$(arg bcr_bot_4_initial_pose_y)" />
+      <arg name="initial_pose_a" default="$(arg bcr_bot_4_initial_pose_a)" />
     </include>
   </group>
 
