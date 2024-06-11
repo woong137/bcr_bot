@@ -14,6 +14,9 @@
     <remap from="/map" to="/prohibition_map"/>
   </node>
 
+  <!-- Clear costmaps -->
+  <node pkg="bcr_bot" type="clear_costmaps_clinet.py" name="clear_costmaps_clinet"/>
+
   <!-- INITIAL POSE -->
 
   <arg name="bcr_bot_0_initial_pose_x" default="5.0" />
