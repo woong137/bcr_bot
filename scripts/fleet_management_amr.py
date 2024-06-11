@@ -64,8 +64,13 @@ class PartSpawner:
             self.rospack.get_path('bcr_bot') + "/param/zone_coordinates.yaml")
         self.distance_threshold = 0.11
         self.angle_threshold = 0.1
-        self.robots = ["bcr_bot_0", "bcr_bot_1",
-                       "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
+        self.robots = [
+            "bcr_bot_0",
+            "bcr_bot_1",
+            "bcr_bot_2",
+            "bcr_bot_3",
+            "bcr_bot_4"
+        ]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -92,12 +97,12 @@ class PartSpawner:
                 spawn_point = Point(
                     x=target_zone_value['x'], y=target_zone_value['y'], z=0.5)
                 self.spawn_model_func(
-                    "car_wheel", robot_namespace, spawn_point, [0, 0, 0])
+                    target_zone_value['part'], robot_namespace, spawn_point, [0, 0, 0])
 
             elif has_model and is_at_zone and is_demand_zone:
                 rospy.loginfo(
                     f"{robot_namespace} 로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
-                self.delete_model_func("car_wheel", robot_namespace)
+                self.delete_model_func(target_zone_value['part'], robot_namespace)
 
     def check_model(self, part, robot_namespace):
         part_name = f"{part}({robot_namespace})"
