@@ -11,14 +11,15 @@
   <node pkg="map_server" name="prohibition_map_server" type="map_server"
     args="$(find bcr_bot)/maps/no_roof_small_warehouse.yaml">
     <param name="frame_id" value="$(arg set_map_frame)" />
-    <remap from="/map" to="/prohibition_map"/>
+    <remap from="/map" to="/prohibition_map" />
   </node>
 
   <!-- Clear costmaps -->
-  <node pkg="bcr_bot" type="clear_costmaps_clinet.py" name="clear_costmaps_clinet"/>
+  <node pkg="bcr_bot" type="clear_costmaps_clinet.py" name="clear_costmaps_clinet">
+    <param name="number_of_robots" value="5" />
+  </node>
 
   <!-- INITIAL POSE -->
-
   <arg name="bcr_bot_0_initial_pose_x" default="5.0" />
   <arg name="bcr_bot_0_initial_pose_y" default="1.0" />
   <arg name="bcr_bot_0_initial_pose_a" default="0.0" />
