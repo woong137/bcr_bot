@@ -76,7 +76,7 @@
     <param name="global_costmap/scan/sensor_frame"  value="$(arg set_scan_frame)"/>
     <param name="global_costmap/global_frame"       value="$(arg set_map_frame)"/>
     <param name="global_costmap/robot_base_frame"   value="$(arg set_base_frame)"/>
-    <remap from="map" to="/prohibition_map"/>
+    <remap from="map" to="/map"/>
   </node>
 
 </launch>
