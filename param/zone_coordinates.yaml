@@ -13,12 +13,12 @@ zones:
     x: -3.0
     y: 1.2
     theta: 0.0
-    part: car_interior
+    part: car_wheel
   S4:
     x: -3.0
     y: 5.0
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   S5:
     x: -3.0
     y: 8.0
@@ -39,12 +39,12 @@ zones:
     x: 1.0
     y: 1.2
     theta: 0.0
-    part: car_interior
+    part: car_wheel
   D4:
     x: 1.0
     y: 5.0
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   D5:
     x: 1.0
     y: 8.0
