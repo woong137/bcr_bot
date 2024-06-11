@@ -15,7 +15,7 @@
   </node>
 
   <!-- Clear costmaps -->
-  <node pkg="bcr_bot" type="clear_costmaps_clinet.py" name="clear_costmaps_clinet">
+  <node pkg="bcr_bot" type="clear_costmaps_client.py" name="clear_costmaps_client">
     <param name="number_of_robots" value="5" />
   </node>
 
