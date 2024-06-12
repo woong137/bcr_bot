@@ -7,7 +7,6 @@ import yaml
 from std_msgs.msg import String
 from gazebo_msgs.srv import DeleteModel, SpawnModel, GetModelState
 from geometry_msgs.msg import Quaternion, Pose, Point
-import threading
 
 
 class FleetManagerAMR:
@@ -19,14 +18,12 @@ class FleetManagerAMR:
             "bcr_bot_3": ["S4", "D4"],
             "bcr_bot_4": ["S5", "D5"],
         }
-        self.current_zones = {
-            bot: 0 for bot in self.target_zones.keys()}  # 현재 목표 구역 인덱스
+        self.current_zones = {bot: 0 for bot in self.target_zones.keys()}
         self.publishers = {bot_name: rospy.Publisher(
             f"/{bot_name}/target_zone", String, queue_size=10) for bot_name in self.target_zones.keys()}
 
     def publish_target_zone(self, bot_name, target_zone):
-        pub = self.publishers[bot_name]
-        pub.publish(target_zone)
+        self.publishers[bot_name].publish(target_zone)
 
     def update_target_zones(self, part_spawner):
         for robot_namespace, zones in self.target_zones.items():
@@ -36,24 +33,18 @@ class FleetManagerAMR:
             has_model = part_spawner.check_model(
                 target_zone_value['part'], robot_namespace)
 
-            if current_index == 0 and has_model:  # Supply to Demand
+            if current_index == 0 and has_model:
                 self.current_zones[robot_namespace] = 1
-            elif current_index == 1 and not has_model:  # Demand to Supply
+            elif current_index == 1 and not has_model:
                 self.current_zones[robot_namespace] = 0
 
     def main(self, part_spawner):
         self.update_target_zones(part_spawner)
-        threads = []
         for bot_name, zones in self.target_zones.items():
             current_index = self.current_zones[bot_name]
             target_zone = zones[current_index]
-            thread = threading.Thread(
-                target=self.publish_target_zone, args=(bot_name, target_zone))
+            self.publish_target_zone(bot_name, target_zone)
             print(f"{bot_name} 로봇의 목표 구역: {target_zone}")
-            thread.start()
-            threads.append(thread)
-        for thread in threads:
-            thread.join()
 
 
 class PartSpawner:
@@ -64,13 +55,8 @@ class PartSpawner:
             self.rospack.get_path('bcr_bot') + "/param/zone_coordinates.yaml")
         self.distance_threshold = 0.11
         self.angle_threshold = 0.1
-        self.robots = [
-            "bcr_bot_0",
-            "bcr_bot_1",
-            "bcr_bot_2",
-            "bcr_bot_3",
-            "bcr_bot_4"
-        ]
+        self.robots = ["bcr_bot_0", "bcr_bot_1",
+                       "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -102,7 +88,8 @@ class PartSpawner:
             elif has_model and is_at_zone and is_demand_zone:
                 rospy.loginfo(
                     f"{robot_namespace} 로봇이 {target_zone} 구역에서 부품 {target_zone_value['part']}를 공급했습니다.")
-                self.delete_model_func(target_zone_value['part'], robot_namespace)
+                self.delete_model_func(
+                    target_zone_value['part'], robot_namespace)
 
     def check_model(self, part, robot_namespace):
         part_name = f"{part}({robot_namespace})"
