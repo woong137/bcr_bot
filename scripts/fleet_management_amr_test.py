@@ -10,14 +10,8 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 
 
 class FleetManagerAMR:
-    def __init__(self):
-        self.target_zones = {
-            "bcr_bot_0": ["S1", "D1"],
-            "bcr_bot_1": ["S2", "D2"],
-            "bcr_bot_2": ["S3", "D3"],
-            "bcr_bot_3": ["S4", "D4"],
-            "bcr_bot_4": ["S5", "D5"],
-        }
+    def __init__(self, target_zones):
+        self.target_zones = target_zones
         self.current_zones = {bot: 0 for bot in self.target_zones.keys()}
         self.publishers = {bot_name: rospy.Publisher(
             f"/{bot_name}/target_zone", String, queue_size=10) for bot_name in self.target_zones.keys()}
@@ -48,15 +42,14 @@ class FleetManagerAMR:
 
 
 class PartSpawner:
-    def __init__(self):
+    def __init__(self, robots):
         self.rospack = rospkg.RosPack()
         self.path = self.rospack.get_path('bcr_bot') + "/models/"
         self.zones = self.load_zone_coordinates(
             self.rospack.get_path('bcr_bot') + "/param/zone_coordinates.yaml")
         self.distance_threshold = 0.11
         self.angle_threshold = 0.1
-        self.robots = ["bcr_bot_0", "bcr_bot_1",
-                       "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
+        self.robots = robots
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -164,8 +157,7 @@ if __name__ == "__main__":
     rospy.wait_for_service("/gazebo/spawn_sdf_model")
     rospy.wait_for_service("/gazebo/get_model_state")
 
-    fleet_manager_amr = FleetManagerAMR()
-    part_spawner = PartSpawner()
+    ##TODO: 각 로봇의 목표 구역을 새로운 맵에 맞게 설정
     target_zones = {
         "bcr_bot_0": ["S1", "D1"],
         "bcr_bot_1": ["S2", "D2"],
@@ -174,6 +166,9 @@ if __name__ == "__main__":
         "bcr_bot_4": ["S5", "D5"],
     }
     robots = list(target_zones.keys())
+
+    fleet_manager_amr = FleetManagerAMR(target_zones)
+    part_spawner = PartSpawner(robots)
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
