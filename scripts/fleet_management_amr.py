@@ -159,11 +159,11 @@ if __name__ == "__main__":
 
     ##TODO: 각 로봇의 목표 구역을 새로운 맵에 맞게 설정
     target_zones = {
-        "bcr_bot_0": ["S1", "D1"],
-        "bcr_bot_1": ["S2", "D2"],
-        "bcr_bot_2": ["S3", "D3"],
-        "bcr_bot_3": ["S4", "D4"],
-        "bcr_bot_4": ["S5", "D5"],
+        "bcr_bot_0": ["S1", "D1", "S2", "D1"],
+        "bcr_bot_1": ["S3", "D2", "S4", "D2"],
+        "bcr_bot_2": ["S13", "D3", "S14", "D3"],
+        "bcr_bot_3": ["S15", "D4", "S16", "D4"],
+        "bcr_bot_4": ["S5", "D2"],
     }
     robots = list(target_zones.keys())
 
