@@ -166,17 +166,18 @@ if __name__ == "__main__":
 
     fleet_manager_amr = FleetManagerAMR()
     part_spawner = PartSpawner()
+    target_zones = {
+        "bcr_bot_0": ["S1", "D1"],
+        "bcr_bot_1": ["S2", "D2"],
+        "bcr_bot_2": ["S3", "D3"],
+        "bcr_bot_3": ["S4", "D4"],
+        "bcr_bot_4": ["S5", "D5"],
+    }
+    robots = list(target_zones.keys())
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        target_zones = {
-            "bcr_bot_0": ["S1", "D1"],
-            "bcr_bot_1": ["S2", "D2"],
-            "bcr_bot_2": ["S3", "D3"],
-            "bcr_bot_3": ["S4", "D4"],
-            "bcr_bot_4": ["S5", "D5"],
-        }
-        robots = list(target_zones.keys())
+
         fleet_manager_amr.main(part_spawner)
         part_spawner.main(fleet_manager_amr)
         rate.sleep()
