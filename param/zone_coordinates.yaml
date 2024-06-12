@@ -1,52 +1,101 @@
 zones:
   S1:
-    x: -3.0
-    y: -7.5
+    x: 151
+    y: 16.5
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   S2:
-    x: -3.0
-    y: -3.2
+    x: 151
+    y: 19
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   S3:
-    x: -3.0
-    y: 1.2
+    x: 151
+    y: 21.5
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   S4:
-    x: -3.0
-    y: 5.0
+    x: 151
+    y: 24
     theta: 0.0
     part: car_interior
   S5:
-    x: -3.0
-    y: 8.0
+    x: 151
+    y: 31.5
     theta: 0.0
     part: car_interior
-
+  S6:
+    x: 151
+    y: 34
+    theta: 0.0
+    part: car_interior
+  S7:
+    x: 151
+    y: 36.5
+    theta: 0.0
+    part: car_interior
+  S8:
+    x: 151
+    y: 39
+    theta: 0.0
+    part: car_interior
+  S9:
+    x: 151
+    y: 46.5
+    theta: 0.0
+    part: car_interior
+  S10:
+    x: 151
+    y: 49
+    theta: 0.0
+    part: car_interior
+  S11:
+    x: 151
+    y: 51.5
+    theta: 0.0
+    part: car_interior
+  S12:
+    x: 151
+    y: 54
+    theta: 0.0
+    part: car_interior
+  S13:
+    x: 151
+    y: 61.5
+    theta: 0.0
+    part: car_wheel
+  S14:
+    x: 151
+    y: 64
+    theta: 0.0
+    part: car_wheel
+  S15:
+    x: 151
+    y: 56.5
+    theta: 0.0
+    part: car_wheel
+  S16:
+    x: 151
+    y: 59
+    theta: 0.0
+    part: car_wheel
   D1:
-    x: 1.0
-    y: -7.5
+    x: 32
+    y: 12.5
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   D2:
-    x: 1.0
-    y: -3.2
+    x: 32
+    y: 22.5
     theta: 0.0
-    part: car_wheel
+    part: car_interior
   D3:
-    x: 1.0
-    y: 1.2
+    x: 50.5
+    y: 12.5
     theta: 0.0
     part: car_wheel
   D4:
-    x: 1.0
-    y: 5.0
+    x: 50.5
+    y: 22.5
     theta: 0.0
-    part: car_interior
-  D5:
-    x: 1.0
-    y: 8.0
-    theta: 0.0
-    part: car_interior
+    part: car_wheel
