@@ -6,7 +6,7 @@
 
 	<env name="GAZEBO_MODEL_PATH"     value="$(find bcr_bot)/models:$(optenv GAZEBO_MODEL_PATH)"/>
 	<env name="GAZEBO_RESOURCE_PATH"  value="$(find bcr_bot)/worlds:$(optenv GAZEBO_RESOURCE_PATH)"/>
-	<arg name="world_name"            default="$(find aws_robomaker_small_warehouse_world)/worlds/small_warehouse_edit.world"/>
+	<arg name="world_name"            default="$(find automobile_manufacturing)/worlds/factory_object_test2.world"/>
 	<arg name="gazebo_gui_enabled"    default="true"/>
 	<arg name="two_d_lidar_enabled"   default="true"/>
 	<arg name="camera_enabled"        default="true"/>
@@ -16,8 +16,8 @@
 	<arg name="conveyor_enabled"      default="false"/>
 	<arg name="ground_truth_frame"    default="map"/>
 	<arg name="robot_namespace"       default=""/>
-	<arg name="position_x"            default="0.0"/>
-	<arg name="position_y"            default="0.0"/>
+	<arg name="position_x"            default="20.0"/>
+	<arg name="position_y"            default="2.0"/>
 	<arg name="orientation_yaw"       default="0.0"/>
 	<arg name="odometry_source"       default="world"/>
 
