@@ -24,7 +24,7 @@
 	<arg name="bcr_bot_0_initial_pose_y" default="15.5" />
 	<arg name="bcr_bot_0_initial_pose_a" default="3.14" />
 
-	<arg name="bcr_bot_1_initial_pose_x" default="154.50.0" />
+	<arg name="bcr_bot_1_initial_pose_x" default="154.5" />
 	<arg name="bcr_bot_1_initial_pose_y" default="20.0" />
 	<arg name="bcr_bot_1_initial_pose_a" default="3.14" />
 
@@ -97,7 +97,7 @@
     </include>
   </group>
 
-  <arg name="bcr_bot_4_prefix" value="bcr_bot_4" />
+  <!-- <arg name="bcr_bot_4_prefix" value="bcr_bot_4" />
   <group ns="$(arg bcr_bot_4_prefix)">
     <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
@@ -109,6 +109,6 @@
       <arg name="initial_pose_y" default="$(arg bcr_bot_4_initial_pose_y)" />
       <arg name="initial_pose_a" default="$(arg bcr_bot_4_initial_pose_a)" />
     </include>
-  </group>
+  </group> -->
 
 </launch>

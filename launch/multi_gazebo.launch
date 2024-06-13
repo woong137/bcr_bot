@@ -23,7 +23,7 @@
 	<arg name="bcr_bot_0_initial_pose_y" default="15.5" />
 	<arg name="bcr_bot_0_initial_pose_a" default="3.14" />
 
-	<arg name="bcr_bot_1_initial_pose_x" default="154.50.0" />
+	<arg name="bcr_bot_1_initial_pose_x" default="154.5" />
 	<arg name="bcr_bot_1_initial_pose_y" default="20.0" />
 	<arg name="bcr_bot_1_initial_pose_a" default="3.14" />
 
@@ -141,7 +141,7 @@
 		</include>
 	</group>
 
-	<group ns="bcr_bot_4">
+	<!-- <group ns="bcr_bot_4">
 		<arg name="robot_namespace" value="bcr_bot_4" />
 		<arg name="position_x" value="$(arg bcr_bot_4_initial_pose_x)" />
 		<arg name="position_y" value="$(arg bcr_bot_4_initial_pose_y)" />
@@ -161,6 +161,6 @@
 			<arg name="orientation_yaw" value="$(arg orientation_yaw)" />
 			<arg name="odometry_source" value="$(arg odometry_source)" />
 		</include>
-	</group>
+	</group> -->
 
 </launch>
