@@ -3,13 +3,13 @@
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server"
-    args="$(find bcr_bot)/maps/small_warehouse_edit.yaml">
+    args="$(find bcr_bot)/maps/new_map.yaml">
     <param name="frame_id" value="$(arg set_map_frame)" />
   </node>
 
   <!-- Map server -->
   <node pkg="map_server" name="prohibition_map_server" type="map_server"
-    args="$(find bcr_bot)/maps/no_roof_small_warehouse.yaml">
+    args="$(find bcr_bot)/maps/new_map.yaml">
     <param name="frame_id" value="$(arg set_map_frame)" />
     <remap from="/map" to="/prohibition_map" />
   </node>
