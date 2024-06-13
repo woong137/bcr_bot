@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-
+        print("=========================================")
         fleet_manager_amr.main(part_spawner)
         part_spawner.main(fleet_manager_amr)
         rate.sleep()
