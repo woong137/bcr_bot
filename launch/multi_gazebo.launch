@@ -19,21 +19,21 @@
 
 	<!-- .......................... INITIAL POSE ................................... -->
 
-	<arg name="bcr_bot_0_initial_pose_x" default="5.0" />
-	<arg name="bcr_bot_0_initial_pose_y" default="1.0" />
-	<arg name="bcr_bot_0_initial_pose_a" default="0.0" />
+	<arg name="bcr_bot_0_initial_pose_x" default="154.5" />
+	<arg name="bcr_bot_0_initial_pose_y" default="15.5" />
+	<arg name="bcr_bot_0_initial_pose_a" default="3.14" />
 
-	<arg name="bcr_bot_1_initial_pose_x" default="0.0" />
-	<arg name="bcr_bot_1_initial_pose_y" default="-8.0" />
-	<arg name="bcr_bot_1_initial_pose_a" default="0.0" />
+	<arg name="bcr_bot_1_initial_pose_x" default="154.50.0" />
+	<arg name="bcr_bot_1_initial_pose_y" default="20.0" />
+	<arg name="bcr_bot_1_initial_pose_a" default="3.14" />
 
-	<arg name="bcr_bot_2_initial_pose_x" default="2.5" />
-	<arg name="bcr_bot_2_initial_pose_y" default="8.0" />
-	<arg name="bcr_bot_2_initial_pose_a" default="0.0" />
+	<arg name="bcr_bot_2_initial_pose_x" default="154.5" />
+	<arg name="bcr_bot_2_initial_pose_y" default="24.0" />
+	<arg name="bcr_bot_2_initial_pose_a" default="3.14" />
 
-	<arg name="bcr_bot_3_initial_pose_x" default="-2.5" />
-	<arg name="bcr_bot_3_initial_pose_y" default="8.0" />
-	<arg name="bcr_bot_3_initial_pose_a" default="0.0" />
+	<arg name="bcr_bot_3_initial_pose_x" default="154.5" />
+	<arg name="bcr_bot_3_initial_pose_y" default="29.0" />
+	<arg name="bcr_bot_3_initial_pose_a" default="3.14" />
 
 	<arg name="bcr_bot_4_initial_pose_x" default="-2.5" />
 	<arg name="bcr_bot_4_initial_pose_y" default="-8.0" />
