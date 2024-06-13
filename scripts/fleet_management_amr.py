@@ -163,7 +163,6 @@ if __name__ == "__main__":
         "bcr_bot_1": ["S3", "D2", "S4", "D2"],
         "bcr_bot_2": ["S13", "D3", "S14", "D3"],
         "bcr_bot_3": ["S15", "D4", "S16", "D4"],
-        "bcr_bot_4": ["S5", "D2"],
     }
     robots = list(target_zones.keys())
 
