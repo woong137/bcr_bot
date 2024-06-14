@@ -3,7 +3,7 @@
 
   <!-- Map server -->
   <node pkg="map_server" name="map_server" type="map_server"
-    args="$(find bcr_bot)/maps/small_warehouse_edit.yaml">
+    args="$(find bcr_bot)/maps/no_roof_small_warehouse.yaml">
     <param name="frame_id" value="$(arg set_map_frame)" />
   </node>
 
@@ -16,12 +16,12 @@
 
   <!-- Clear costmaps -->
   <node pkg="bcr_bot" type="clear_costmaps_client.py" name="clear_costmaps_client">
-    <param name="number_of_robots" value="5" />
+    <param name="number_of_robots" value="2" />
   </node>
 
   <!-- INITIAL POSE -->
-  <arg name="bcr_bot_0_initial_pose_x" default="5.0" />
-  <arg name="bcr_bot_0_initial_pose_y" default="1.0" />
+  <arg name="bcr_bot_0_initial_pose_x" default="1.0" />
+  <arg name="bcr_bot_0_initial_pose_y" default="0.0" />
   <arg name="bcr_bot_0_initial_pose_a" default="0.0" />
 
   <arg name="bcr_bot_1_initial_pose_x" default="0.0" />
@@ -42,7 +42,8 @@
 
   <!-- launch the navigation stacks of 3 bcr_bots-->
   <arg name="bcr_bot_0_prefix" value="bcr_bot_0" />
-  <group ns="$(arg bcr_bot_0_prefix)">" <node pkg="bcr_bot" type="set_goal.py" name="set_goal"
+  <group ns="$(arg bcr_bot_0_prefix)">
+    <node pkg="bcr_bot" type="set_goal.py" name="set_goal"
       output="screen" />
     <include file="$(find bcr_bot)/launch/single_navigation.launch">
       <arg name="set_base_frame" value="$(arg bcr_bot_0_prefix)/base_footprint" />
@@ -68,7 +69,7 @@
       <arg name="initial_pose_a" default="$(arg bcr_bot_1_initial_pose_a)" />
     </include>
   </group>
-
+  <!-- 
   <arg name="bcr_bot_2_prefix" value="bcr_bot_2" />
   <group ns="$(arg bcr_bot_2_prefix)">
     <node pkg="bcr_bot" type="set_goal.py" name="set_goal" output="screen" />
@@ -109,6 +110,6 @@
       <arg name="initial_pose_y" default="$(arg bcr_bot_4_initial_pose_y)" />
       <arg name="initial_pose_a" default="$(arg bcr_bot_4_initial_pose_a)" />
     </include>
-  </group>
+  </group> -->
 
 </launch>

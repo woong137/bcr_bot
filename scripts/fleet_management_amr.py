@@ -12,11 +12,11 @@ from geometry_msgs.msg import Quaternion, Pose, Point
 class FleetManagerAMR:
     def __init__(self):
         self.target_zones = {
-            "bcr_bot_0": ["S1", "D1"],
-            "bcr_bot_1": ["S2", "D2"],
-            "bcr_bot_2": ["S3", "D3"],
-            "bcr_bot_3": ["S4", "D4"],
-            "bcr_bot_4": ["S5", "D5"],
+            "bcr_bot_0": ["S2", "D3"],
+            "bcr_bot_1": ["S3", "D2"],
+            # "bcr_bot_2": ["S3", "D3"],
+            # "bcr_bot_3": ["S4", "D4"],
+            # "bcr_bot_4": ["S5", "D5"],
         }
         self.current_zones = {bot: 0 for bot in self.target_zones.keys()}
         self.publishers = {bot_name: rospy.Publisher(
@@ -56,7 +56,8 @@ class PartSpawner:
         self.distance_threshold = 0.11
         self.angle_threshold = 0.1
         self.robots = ["bcr_bot_0", "bcr_bot_1",
-                       "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"]
+                    #    "bcr_bot_2", "bcr_bot_3", "bcr_bot_4"
+                    ]
 
         self.spawn_model = rospy.ServiceProxy(
             "/gazebo/spawn_sdf_model", SpawnModel)
@@ -169,6 +170,7 @@ if __name__ == "__main__":
 
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
+        print("=========================================")
         fleet_manager_amr.main(part_spawner)
         part_spawner.main(fleet_manager_amr)
         rate.sleep()
